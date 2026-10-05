@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>CFO Bubble Breakthrough — Handcrafted Snakes & Ladders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--ink:#14303a;--paper:#eceeeb;--line:#d3d8d4;--teal:#1f6f78;--brass:#a9822f;--red:#b23b3b;--mut:#5b6b70}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:#1c2b30;font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.top{background:var(--ink);color:#fff;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--brass)}
+.top b{font:600 19px Georgia,serif}.top span{font-size:14px;opacity:.85}
+main{max-width:920px;margin:24px auto;padding:0 16px}
+footer{text-align:center;padding:20px;font-size:13px;color:var(--mut)}footer a{color:var(--mut)}
+.card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:26px;margin-bottom:16px}
+h1,h2,h3{font-family:Georgia,serif;color:var(--ink);margin:0 0 10px}h1{font-size:30px}h2{font-size:23px}h3{font-size:18px}
+.lead{font-size:18px;color:#33464c;max-width:62ch}.mut{color:var(--mut);font-size:14px}
+label{display:block;font-weight:600;margin:14px 0 4px;font-size:14px}
+input[type=text],select{width:100%;padding:10px 12px;border:1px solid #b9c1bd;border-radius:4px;font:inherit;background:#fff}
+button,.btn{background:var(--teal);color:#fff;border:0;border-radius:4px;padding:11px 20px;font:600 15px system-ui,sans-serif;cursor:pointer;margin:6px 8px 0 0}
+button:hover{background:#185860}button.alt{background:#fff;color:var(--ink);border:1px solid #9aa6a2}button.alt:hover{background:#f1f3f1}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--brass);outline-offset:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
+.arch{background:#fff;color:#1c2b30;border:1px solid var(--line);text-align:left;padding:16px;margin:0;font-weight:400;border-top:4px solid var(--brass)}
+.arch:hover{background:#f6f3ea}.arch b{display:block;font:600 17px Georgia,serif;color:var(--ink)}.arch small{display:block;margin-top:6px}
+.hud{display:flex;flex-wrap:wrap;gap:8px 22px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px 16px;margin-bottom:10px;font-size:14px}
+.hud b{font-variant-numeric:tabular-nums}.hud span:first-child{font-weight:600;color:var(--ink);flex:1}
+.arena{position:relative;height:400px;background:#10262e;border-radius:6px;overflow:hidden;border-bottom:4px solid var(--brass)}
+.arena.miss{box-shadow:inset 0 0 0 3px var(--red)}
+.bx{position:absolute;padding:6px 12px;border-radius:4px;color:#fff;font:600 18px ui-monospace,Consolas,monospace;background:var(--teal);white-space:nowrap;will-change:transform}
+.bx.m{background:var(--brass)}.bx.pop{opacity:0;transition:opacity .2s}
+input.big{width:100%;margin-top:10px;padding:14px;font-size:20px;border:2px solid var(--ink);border-radius:4px}input.big.err{border-color:var(--red)}
+.scale{display:flex;gap:6px;flex-wrap:wrap}.scale label{margin:0;font-weight:400}
+.scale input{position:absolute;opacity:0}.scale span{display:inline-block;min-width:44px;text-align:center;padding:9px 0;border:1px solid #9aa6a2;border-radius:4px;cursor:pointer}
+.scale input:checked+span{background:var(--ink);color:#fff}.scale input:focus-visible+span{outline:3px solid var(--brass)}
+.stagebox{display:flex;justify-content:center;background:#10262e;border-radius:6px;padding:8px}
+canvas{max-width:100%;height:auto;touch-action:none;cursor:crosshair;background:#f4f5f2;border-radius:4px}
+.meter{height:8px;background:#dfe4e1;border-radius:4px;overflow:hidden;margin:0 0 10px}.meter i{display:block;height:100%;width:50%;background:var(--brass);transition:width .3s}
+.tray{margin-top:10px;min-height:44px}.pw{background:#fff;color:var(--ink);border:1px solid var(--brass);padding:8px 12px;font-size:14px}.pw b{background:var(--brass);color:#fff;border-radius:50%;display:inline-block;width:22px;text-align:center;margin-right:4px}
+#md{display:none;position:fixed;inset:0;background:rgba(10,25,30,.7);align-items:center;justify-content:center;padding:16px;z-index:9}
+.mbox{background:#fff;border-radius:6px;max-width:620px;width:100%;max-height:92vh;overflow:auto;padding:26px;border-top:5px solid var(--brass)}
+.opt{display:block;width:100%;text-align:left;background:#fff;color:#1c2b30;border:1px solid #9aa6a2;font-weight:400;margin:8px 0 0;padding:12px 14px}.opt:hover{background:#f1f5f4}
+.good{color:var(--teal)}.bad{color:var(--red)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}.stat{border:1px solid var(--line);padding:14px;text-align:center}.stat b{display:block;font:600 30px Georgia,serif;color:var(--ink)}
+.bar{margin:10px 0}.bar div{height:12px;background:#dfe4e1;border-radius:3px}.bar i{display:block;height:100%;background:var(--teal);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}.scroll{overflow-x:auto}
+.qpanel{background:#fff;border:1px solid var(--line);border-top:4px solid var(--brass);border-radius:6px;padding:16px 20px;margin-bottom:10px}.qpanel h3{margin:2px 0 4px}.qpanel p{margin:4px 0}
+.arena2{position:relative;height:520px;background:#10262e;border-radius:6px;overflow:hidden;touch-action:none;cursor:crosshair;border-bottom:4px solid var(--brass)}
+.arena2 canvas{position:absolute;left:0;top:0;pointer-events:none;z-index:2;background:transparent;border-radius:0}
+.blk{position:absolute;top:12px;width:23.5%;height:176px;border-radius:8px;color:#fff;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.3;box-shadow:0 2px 0 rgba(0,0,0,.35);overflow:hidden}
+.blk b{flex:none;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center}
+.blk.gone{display:none}.blk.right{outline:4px solid #7fd37f}.blk.boom{animation:boom .35s forwards}
+@keyframes boom{to{transform:scale(1.2);opacity:0}}button:disabled{opacity:.5;cursor:default}
+@media(max-width:720px){.rule-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.blk{font-size:12px;padding:8px;height:200px}.arena2{height:480px}}
+
+.top{background:linear-gradient(90deg,#0b1f26,#1d4d58)}.top b{display:flex;align-items:center;gap:10px}
+.logo{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f2d68a,#a9822f 60%,#6b4f16);box-shadow:0 0 0 3px rgba(255,255,255,.15)}
+.hdr-r{display:flex;align-items:center;gap:12px}#snd{margin:0;padding:6px 12px;font-size:13px;background:transparent;border:1px solid rgba(255,255,255,.45)}
+.stepbar{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}.stepbar:empty{display:none}
+.st{font-size:13px;padding:4px 12px;border-radius:99px;background:#eef1ef;color:#5b6b70}.st.on{background:var(--ink);color:#fff}.st.done{background:#d7ebe9;color:#185860}
+#app>*{animation:fin .4s both}@keyframes fin{from{opacity:0;transform:translateY(10px)}}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#0d2830 0%,#1f6f78 100%);color:#fff;border-radius:12px;padding:38px 34px;margin-bottom:16px;box-shadow:0 10px 30px rgba(20,48,58,.25)}
+.hero h1{color:#fff;font-size:38px;line-height:1.15;max-width:14em;position:relative}.hero .lead{color:#dcebe9;position:relative}
+.kick{display:inline-block;background:rgba(255,255,255,.15);border-radius:99px;padding:3px 12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px;position:relative}
+.hero i{position:absolute;border-radius:50%;opacity:.5;animation:flt 7s ease-in-out infinite}@keyframes flt{50%{transform:translateY(-14px)}}
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:18px;position:relative}
+.feats div{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:12px 14px;font-size:14px}.feats b{display:block;font:600 16px Georgia,serif;color:#f2d68a}
+.arch{transition:transform .15s,box-shadow .15s}.arch:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(20,48,58,.15)}
+.gl{display:inline-flex;width:38px;height:38px;border-radius:50%;align-items:center;justify-content:center;color:#fff;font:700 18px Georgia,serif;margin-bottom:8px}
+.arena{background:radial-gradient(ellipse at 50% 0,#1d4d58,#08161b 75%)}
+.arena::before,.arena2::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:36px 36px;pointer-events:none}
+.bx{border-radius:6px;background:linear-gradient(180deg,#2a9aa5,#1f6f78);border-bottom:4px solid #0f4048;box-shadow:0 0 14px rgba(42,154,165,.55)}
+.bx.m{background:linear-gradient(180deg,#d8ab45,#a9822f);border-bottom-color:#6b4f16;box-shadow:0 0 14px rgba(216,171,69,.55)}
+.bx.lock{outline:3px solid #fff;box-shadow:0 0 22px #fff}.bx u{text-decoration:none;color:#ffe08a}
+.arena.miss,.arena2.shake{animation:shake .28s}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.tbar{height:8px;background:#dfe4e1;border-radius:4px;overflow:hidden;margin:0 0 10px}.tbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1f6f78,#a9822f)}
+.cd{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 96px Georgia,serif;color:#f2d68a;z-index:3;background:rgba(8,22,27,.55)}
+.arena2{background:radial-gradient(ellipse at 50% 100%,#1d4d58,#08161b 75%)}
+.blk{border-radius:12px;border-bottom:10px solid rgba(0,0,0,.4);background-image:linear-gradient(180deg,rgba(255,255,255,.3),rgba(255,255,255,0) 45%,rgba(0,0,0,.2));box-shadow:inset 0 0 0 3px rgba(255,255,255,.16),0 10px 22px rgba(0,0,0,.45);font-weight:600;font-size:16px;animation:drop .55s cubic-bezier(.2,1.5,.4,1) both,bob 3.2s ease-in-out infinite}
+.blk:hover{filter:brightness(1.18)}
+.blk b{width:32px;height:32px;background:radial-gradient(circle at 35% 30%,#fff,#e8d59a 60%,#a9822f);color:#4a3508;font:700 16px Georgia,serif;box-shadow:0 2px 0 rgba(0,0,0,.35)}
+.blk::after{content:"";position:absolute;right:10px;top:10px;width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35);box-shadow:-14px 0 rgba(255,255,255,.2)}
+@keyframes drop{from{transform:translateY(-240px) rotate(-6deg);opacity:0}}@keyframes bob{50%{translate:0 -6px}}
+.toast{position:absolute;left:50%;top:62%;transform:translateX(-50%);z-index:4;background:rgba(255,255,255,.97);border-radius:10px;padding:14px 20px;max-width:88%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}.toast b{display:block;font:600 19px Georgia,serif}
+.persona{background:linear-gradient(135deg,#0d2830,#1f6f78);color:#fff;border-radius:10px;padding:22px 26px;margin:10px 0}.persona h2{color:#f2d68a;margin:0}.persona .lead{color:#dcebe9;margin:6px 0 0}
+.bar i{background:linear-gradient(90deg,#1f6f78,#a9822f)}
+@media(max-width:720px){.rule-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.hero h1{font-size:28px}}
+
+:root{--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif}
+body{font-family:var(--sans);background:linear-gradient(180deg,#e6ecea 0,#f3f5f4 380px)}
+h1,h2,h3,.top b,.blk b,.gl,.cd,.toast b,.stat b,.feats b,.arch b,.persona h2{font-family:var(--serif)}button{font-family:var(--sans);border-radius:8px;box-shadow:0 2px 0 rgba(0,0,0,.18);transition:transform .12s,background .12s}button:hover{transform:translateY(-1px)}button:active{transform:translateY(1px)}
+.card,.hud,.qpanel{box-shadow:0 2px 10px rgba(20,48,58,.07)}.hud{border-left:4px solid var(--brass)}
+input[type=text],select{border-radius:8px}
+.arena{height:460px}.dz{position:absolute;left:0;right:0;bottom:82px;border-top:2px dashed rgba(209,73,91,.55)}
+.crit{position:absolute;left:50%;margin-left:-50px;bottom:6px;width:100px;height:100px;z-index:3;pointer-events:none}.crit svg{display:block}
+.crit .gun{transform-origin:50px 59px;transition:transform .07s linear}.arena2 .crit .gun{transition:none}
+.crit .flash{opacity:0}.crit .flash.on{opacity:1}.crit.recoil .body{animation:recoil .14s}@keyframes recoil{40%{transform:translateY(4px)}}
+.bul{position:absolute;left:0;top:0;width:8px;height:8px;border-radius:50%;background:#ffd54a;box-shadow:0 0 10px 3px rgba(255,213,74,.85);z-index:2}.bul.bad{background:#d1495b;box-shadow:0 0 10px 3px rgba(209,73,91,.7)}
+.pips{display:flex;align-items:center;gap:6px;margin-bottom:6px}.pips i{width:12px;height:12px;border-radius:50%;background:#d3d8d4}.pips i.ok{background:#2e9a6a}.pips i.no{background:#b23b3b}.pips i.cur{background:var(--brass);box-shadow:0 0 0 3px rgba(169,130,47,.3)}.pips span{margin-left:8px;font-size:13px;color:var(--mut)}
+.blk::after{display:none}.blk .need{position:absolute;right:10px;top:12px;font-size:12px;background:rgba(0,0,0,.32);border-radius:99px;padding:2px 9px;font-weight:600}
+.blk .txt{line-height:1.35}.blk .txt em{font-style:normal;display:inline-block;transition:all .25s}.blk .txt em.off{opacity:.18;text-decoration:line-through;transform:translateY(6px)}
+.hp{margin-top:auto;height:8px;background:rgba(0,0,0,.32);border-radius:4px;overflow:hidden;flex:none}.hp i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ffd54a,#ff8a3d);transition:width .2s}
+.tips{margin:10px 0 16px;padding-left:20px}.tips li{margin:6px 0}
+.mbox h2{margin-bottom:4px}
+
+.badges{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0}
+.badge{border:1px dashed #b9c1bd;border-radius:10px;padding:12px;background:#f5f7f6;color:#8a969a}.badge b{display:block;font-family:var(--serif);font-size:16px}.badge span{font-size:13px}
+.badge.on{border:2px solid var(--brass);background:linear-gradient(180deg,#fff8e4,#fff);color:#5b4a1a;box-shadow:0 2px 10px rgba(169,130,47,.25)}.badge.on b::before{content:"\2605 ";color:var(--brass)}
+.ins{padding-left:18px}.ins li{margin:8px 0}textarea{width:100%;padding:10px 12px;border:1px solid #b9c1bd;border-radius:8px;font:inherit}
+.persona{position:relative;overflow:hidden}.cf{position:absolute;top:-14px;width:8px;height:12px;animation:cfall linear both}@keyframes cfall{to{transform:translateY(280px) rotate(540deg);opacity:0}}
+@media print{.top,.stepbar,footer,button,#snd{display:none!important}body{background:#fff}.card{box-shadow:none;border:0}.persona,.badge.on,.bar i{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+
+.blk{height:136px;padding:10px;gap:6px;font-size:13.5px}.blk b{width:28px;height:28px;font-size:14px}.blk .need{top:10px;font-size:11px}.arena2{height:470px}
+@media(max-width:720px){.rule-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.blk{font-size:11.5px;padding:7px;height:172px}.arena2{height:500px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== LUDO / SNAKES & LADDERS SURVEY GAME ===== */
+.game-kicker{font:800 12px var(--sans);letter-spacing:.14em;color:#a9822f;margin-bottom:8px}.ludo-intro h2{font-size:clamp(28px,4vw,44px);margin-bottom:8px}.rule-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}.rule-cards>div{padding:15px;border:1px solid rgba(20,48,58,.12);border-radius:12px;background:linear-gradient(145deg,#fff,#f1f5f2);display:grid;gap:4px}.rule-cards span{font-size:25px}.rule-cards b{font:800 13px var(--sans)}.rule-cards small{color:#61747a;line-height:1.35}.ludo-board-shell{position:relative}.ludo-board-shell:before{content:'SNAKES & LADDERS';position:absolute;top:-10px;left:18px;z-index:8;background:#a9822f;color:#fff;padding:5px 10px;border-radius:5px;font:800 10px var(--sans);letter-spacing:.1em;box-shadow:0 2px 5px rgba(0,0,0,.18)}
+.ludo-wrap{display:grid;grid-template-columns:minmax(0,3fr) minmax(270px,1fr);gap:14px;align-items:stretch}
+.ludo-board-shell{background:#10262e;border-radius:12px;padding:12px;border-bottom:4px solid var(--brass);box-shadow:0 8px 24px rgba(20,48,58,.18)}
+.ludo-board{position:relative;aspect-ratio:1/1;width:100%;max-height:calc(100vh - 160px);margin:auto;background:#f5f6f2;border-radius:8px;overflow:hidden;border:3px solid #14303a}
+.ludo-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr);z-index:1}
+.ludo-cell{position:relative;border:1px solid rgba(20,48,58,.18);display:flex;align-items:flex-start;justify-content:flex-start;padding:3px;font:700 clamp(8px,1.1vw,13px) var(--sans);color:#27434a}
+.ludo-cell:nth-child(4n+1){background:#e8f0ee}.ludo-cell:nth-child(4n+2){background:#f6efe0}.ludo-cell:nth-child(4n+3){background:#edf1f6}.ludo-cell:nth-child(4n){background:#f5e9ec}
+.ludo-cell.start{box-shadow:inset 0 0 0 3px #2e9a6a}.ludo-cell.finish{box-shadow:inset 0 0 0 3px #a9822f}
+.ludo-cell .cell-num{opacity:.72}
+.ludo-svg{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+.ladder{stroke:#6e421d;stroke-width:1.45%;stroke-linecap:round;filter:drop-shadow(1px 2px 1px rgba(0,0,0,.28))}.ladder-highlight{stroke:#c98a43;stroke-width:.42%;stroke-linecap:round;opacity:.9}.ladder-rung{stroke:#7b4b20;stroke-width:.82%;stroke-linecap:round}.ladder-rung-hi{stroke:#d79a51;stroke-width:.26%;stroke-linecap:round;opacity:.9}.snake{fill:none;stroke:url(#snakeGrad);stroke-width:2.15%;stroke-linecap:round;filter:drop-shadow(1px 3px 1px rgba(0,0,0,.28));animation:snakeSlither 1.8s ease-in-out infinite}.snake-inner{fill:none;stroke:#e49a42;stroke-width:.42%;stroke-linecap:round;opacity:.75}.snake-eye{fill:#fff}.snake-pupil{fill:#14303a}.snake-head{fill:url(#snakeHead);stroke:#762727;stroke-width:.35%}.snake-tongue{stroke:#d94a4a;stroke-width:.28%;stroke-linecap:round;animation:tongueFlick .75s ease-in-out infinite}@keyframes snakeSlither{0%,100%{transform:translateX(0)}50%{transform:translateX(.35px)}}@keyframes tongueFlick{0%,70%,100%{opacity:.15}80%{opacity:1}}
+.token{position:absolute;width:clamp(24px,4vw,42px);height:clamp(24px,4vw,42px);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;font:800 clamp(11px,1.4vw,16px) var(--serif);color:#fff;border:3px solid #fff;box-shadow:0 4px 9px rgba(0,0,0,.3);transform:translate(-50%,-50%);transition:left .12s linear,top .12s linear}
+.token.user{background:linear-gradient(145deg,#1f6f78,#0d4149)}.token.bot{background:linear-gradient(145deg,#b23b3b,#762727)}
+.token.user::after,.token.bot::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(255,255,255,.35)}
+.ludo-side{background:#fff;border:1px solid var(--line);border-top:4px solid var(--brass);border-radius:10px;padding:16px;box-shadow:0 2px 10px rgba(20,48,58,.07);min-width:0}
+.player-card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:10px;background:#f7f9f8}
+.player-card.active{outline:3px solid rgba(169,130,47,.35);border-color:var(--brass)}
+.player-row{display:flex;justify-content:space-between;gap:8px;align-items:center}.player-name{font-weight:700}.player-pos{font:700 22px var(--serif);color:var(--ink)}
+.question-box{margin-top:12px;padding:12px;border-radius:8px;background:linear-gradient(135deg,#0d2830,#1f6f78);color:#fff}
+.question-box h3{color:#fff;font-size:18px;margin:0 0 6px}.question-box p{margin:4px 0;color:#dcebe9;font-size:13px}
+.q-number{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#f2d68a;font-weight:700}
+.ludo-options{display:grid;gap:7px;margin-top:10px}
+.ludo-opt{width:100%;margin:0;text-align:left;background:#fff;color:#1c2b30;border:1px solid #9aa6a2;padding:10px 11px;font-weight:600;font-size:13px;box-shadow:none}
+.ludo-opt:hover{background:#eef5f3;transform:none}.ludo-opt:disabled{opacity:1;cursor:default}.ludo-opt.correct{border-color:#2e9a6a;background:#e7f5ef}.ludo-opt.wrong{border-color:#b23b3b;background:#fae9e9}
+.move-log{margin-top:10px;padding:9px 10px;background:#f4f6f5;border-radius:8px;font-size:12px;min-height:42px}
+.move-log b{color:var(--ink)}.progress-mini{height:7px;background:#dfe4e1;border-radius:99px;overflow:hidden;margin:8px 0}.progress-mini i{display:block;height:100%;background:linear-gradient(90deg,#1f6f78,#a9822f);width:0;transition:width .3s}
+.ludo-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--mut)}.legend-dot{display:inline-flex;align-items:center;gap:4px}.legend-dot i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.ludo-result{padding:14px;border-radius:10px;background:linear-gradient(135deg,#0d2830,#1f6f78);color:#fff}.ludo-result h2{color:#f2d68a}.ludo-result p{color:#dcebe9}
+@media(max-width:900px){.ludo-wrap{grid-template-columns:1fr}.ludo-board{max-height:none}.ludo-side{order:-1}.ludo-options{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.rule-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.ludo-side{padding:11px}.ludo-options{grid-template-columns:1fr}.ludo-board-shell{padding:7px}.ludo-cell{padding:2px}}
+
+/* BOARD THEME OVERRIDE */
+.ludo-board-shell{position:relative;overflow:visible}
+.ludo-board{box-shadow:inset 0 0 0 2px rgba(255,255,255,.35),0 14px 30px rgba(0,0,0,.22);}
+.ludo-cell{transition:filter .18s ease, transform .18s ease;}
+.ludo-cell:hover{filter:brightness(1.05)}
+.ludo-cell.start .cell-num,.ludo-cell.finish .cell-num{font-weight:900}
+.ludo-svg{overflow:visible}
+.snake-head-group{transform-origin:center;animation:snakeHeadBreathe 1.2s ease-in-out infinite}
+@keyframes snakeHeadBreathe{0%,100%{opacity:1}50%{opacity:.92}}
+.ladder{stroke-linecap:round}.ladder-rung{stroke-linecap:round}
+
+.ludo-board-shell{background:linear-gradient(145deg,#4d2f1d,#8a5a2b 48%,#3a2417);padding:16px;border:1px solid #b98a52;border-bottom:7px solid #2a170d;border-radius:18px;box-shadow:0 18px 38px rgba(44,25,12,.30)}
+.ludo-board-shell:before{background:#d3a052;color:#2d1a0d;border:1px solid #f2d18c;box-shadow:0 4px 9px rgba(0,0,0,.28)}
+.ludo-board{background:#f4e5bd;border:7px solid #5a351c;border-radius:5px;box-shadow:inset 0 0 0 3px #d5ad6c,inset 0 0 35px rgba(80,45,15,.20),0 8px 18px rgba(0,0,0,.35)}
+.ludo-cell{border:1px solid rgba(83,48,20,.22);color:#4a301e;text-shadow:0 1px rgba(255,255,255,.55)}
+.ludo-cell:nth-child(4n+1){background:#f3dfae}.ludo-cell:nth-child(4n+2){background:#ead0a0}.ludo-cell:nth-child(4n+3){background:#f7e8c6}.ludo-cell:nth-child(4n){background:#dfbd86}
+.ludo-cell.start{box-shadow:inset 0 0 0 4px #2e7d52,inset 0 0 14px rgba(46,125,82,.18)}.ludo-cell.finish{box-shadow:inset 0 0 0 4px #c08a2e,inset 0 0 14px rgba(192,138,46,.20)}
+.ladder{stroke:#5d341b;stroke-width:1.65%;filter:drop-shadow(2px 3px 1px rgba(42,20,8,.35))}.ladder-highlight{stroke:#e0a65e;stroke-width:.42%}.ladder-rung{stroke:#6e3d1d;stroke-width:.9%}.ladder-rung-hi{stroke:#efbd72;stroke-width:.25%}
+.snake{stroke-width:2.3%;filter:drop-shadow(2px 3px 2px rgba(50,12,10,.38))}.snake-inner{stroke:#f0b24c;stroke-width:.46%}
+.board-theme-badge{background:#3a2417;color:#f2d18c;border:1px solid #b98a52;position:absolute;right:18px;top:-10px;z-index:8;padding:5px 9px;border-radius:6px;font:800 9px var(--sans);letter-spacing:.12em;opacity:.92}
+/* ===== HANDCRAFTED WOOD / PHOTO-INSPIRED THEME ===== */
+:root{--wood-dark:#24160f;--wood:#5b3821;--wood-mid:#8a5a35;--wood-light:#b98550;--parchment:#d9b27a;--inkwood:#2a1a12;--snakewood:#17100d}
+body{background:
+  radial-gradient(ellipse at 18% 8%,rgba(255,218,157,.16),transparent 30%),
+  repeating-linear-gradient(8deg,rgba(53,28,14,.08) 0 2px,transparent 2px 11px),
+  linear-gradient(135deg,#25170f,#4a2b19 42%,#1d120c 100%);color:#2b1b12}
+.top{background:linear-gradient(90deg,#170d09,#3b2115 50%,#170d09);border-bottom:4px solid #9a693d;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+.top b{letter-spacing:.01em}.logo{background:radial-gradient(circle at 35% 30%,#e7c58f,#a36b39 62%,#3d2112);box-shadow:0 0 0 2px #d1a56f,0 3px 6px rgba(0,0,0,.45)}
+.stepbar{background:#2a1810;color:#e6c99f;border-bottom:1px solid #8d6038}.st{background:#4a2b1a;color:#d8b98e}.st.on{background:#b37a46;color:#fff}.st.done{background:#6f4729;color:#f0d3a1}
+main{max-width:1180px;margin:18px auto;padding:0 14px}
+.card,.hud,.qpanel{background:linear-gradient(145deg,#f1dfbd,#d6b078);border:1px solid #8b6038;box-shadow:inset 0 0 0 2px rgba(255,235,197,.35),0 7px 20px rgba(0,0,0,.28)}
+.ludo-intro{background:linear-gradient(145deg,#d5aa72,#9a693e)!important;color:#29180f!important;border-color:#4d2c19!important}
+.ludo-intro h2,.ludo-intro p{color:#29180f}.game-kicker{color:#4a2b1a}
+.rule-cards>div{background:linear-gradient(145deg,#ead0a2,#c79a61);border-color:#80532f;color:#2b1a11;box-shadow:inset 0 1px rgba(255,255,255,.35)}.rule-cards small{color:#5b3b24}
+.ludo-wrap{grid-template-columns:minmax(0,3.2fr) minmax(270px,1fr);gap:18px}
+.ludo-board-shell{background:
+  repeating-linear-gradient(92deg,rgba(255,255,255,.025) 0 4px,rgba(0,0,0,.045) 4px 8px),
+  linear-gradient(145deg,#2b180f,#6b4226 42%,#3a2115);border:2px solid #a87643;border-bottom:8px solid #1a0d08;border-radius:10px;padding:18px;box-shadow:0 22px 45px rgba(0,0,0,.48),inset 0 1px rgba(255,225,184,.3)}
+.ludo-board-shell:after{content:'';position:absolute;inset:8px;border:1px solid rgba(233,195,139,.25);border-radius:7px;pointer-events:none}
+.ludo-board-shell:before{content:'HANDCRAFTED • CFO SNAKES & LADDERS';left:24px;top:-12px;background:#21120c;color:#e1b879;border:1px solid #9b6a3e;border-radius:3px;box-shadow:0 4px 9px rgba(0,0,0,.5);letter-spacing:.16em}
+.ludo-board{background:#c89b61;border:9px solid #422516;border-radius:2px;box-shadow:inset 0 0 0 2px #e2bc7f,inset 0 0 0 5px rgba(69,37,18,.45),inset 0 0 45px rgba(58,28,12,.28),0 8px 16px rgba(0,0,0,.5);isolation:isolate}
+.ludo-board:after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;background:
+  repeating-linear-gradient(7deg,rgba(74,40,18,.07) 0 2px,transparent 2px 12px),
+  repeating-linear-gradient(96deg,rgba(255,241,210,.045) 0 1px,transparent 1px 17px),
+  radial-gradient(circle at 25% 30%,rgba(255,255,255,.08),transparent 24%),
+  radial-gradient(circle at 80% 72%,rgba(58,28,12,.08),transparent 30%);mix-blend-mode:multiply}
+.ludo-cell{border:1px solid rgba(58,31,16,.28);color:#342014;font-family:Georgia,'Times New Roman',serif;font-weight:800;text-shadow:0 1px rgba(255,228,183,.45);background-image:repeating-linear-gradient(7deg,rgba(78,41,17,.045) 0 1px,transparent 1px 8px);z-index:1;overflow:hidden}.ludo-cell:after{content:'';position:absolute;inset:4px;border:1px solid rgba(72,38,17,.08);border-radius:2px;pointer-events:none}.ludo-cell.ladder-start{box-shadow:inset 0 0 0 3px rgba(74,111,55,.72),inset 0 0 18px rgba(92,129,59,.14)}.ludo-cell.snake-start{box-shadow:inset 0 0 0 3px rgba(103,31,24,.72),inset 0 0 18px rgba(130,39,28,.13)}.cell-mark{position:absolute;right:4px;bottom:2px;font:900 10px/1 Georgia,serif;opacity:.48}.ladder-start .cell-mark{color:#365c2a}.snake-start .cell-mark{color:#6d2119}.start-mark,.finish-mark{position:absolute;left:50%;bottom:4px;transform:translateX(-50%);font:900 8px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;opacity:.72;white-space:nowrap}.start-mark{color:#315b2a}.finish-mark{color:#6a4416}
+.ludo-cell:nth-child(4n+1){background-color:#d4aa70}.ludo-cell:nth-child(4n+2){background-color:#c99b60}.ludo-cell:nth-child(4n+3){background-color:#dfba80}.ludo-cell:nth-child(4n){background-color:#bd8c53}
+.ludo-cell .cell-num{font-size:clamp(9px,1.2vw,14px);opacity:.82}.ludo-cell.start{box-shadow:inset 0 0 0 4px #4d2a16,inset 0 0 0 6px rgba(231,193,132,.5),inset 0 0 20px rgba(78,42,20,.22)}.ludo-cell.finish{box-shadow:inset 0 0 0 4px #1f130d,inset 0 0 0 6px rgba(231,193,132,.5),inset 0 0 20px rgba(45,24,13,.2)}
+.ludo-svg{z-index:3;filter:saturate(.8)}.board-shine{position:absolute;inset:0;z-index:4;pointer-events:none;background:linear-gradient(112deg,rgba(255,238,197,.16),transparent 24%,transparent 70%,rgba(255,238,197,.06));mix-blend-mode:screen;animation:boardShimmer 8s ease-in-out infinite}@keyframes boardShimmer{0%,100%{opacity:.45;transform:translateX(-1%)}50%{opacity:.8;transform:translateX(1%)}}.board-pin{position:absolute;width:11px;height:11px;border-radius:50%;z-index:7;background:radial-gradient(circle at 35% 30%,#f4d59d,#9b6335 55%,#432312 100%);box-shadow:0 2px 3px rgba(0,0,0,.55);border:1px solid #2a160c}.board-pin.tl{left:7px;top:7px}.board-pin.tr{right:7px;top:7px}.board-pin.bl{left:7px;bottom:7px}.board-pin.br{right:7px;bottom:7px}.board-title{position:absolute;left:50%;top:1.3%;transform:translateX(-50%);z-index:6;background:rgba(45,23,12,.82);color:#e8c98f;padding:4px 12px;border:1px solid rgba(225,184,119,.45);border-radius:3px;font:900 9px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;box-shadow:0 2px 5px rgba(0,0,0,.35);pointer-events:none}.board-title b{color:#fff0cb}.board-ripple{position:absolute;z-index:4;width:10%;height:10%;border-radius:50%;border:2px solid rgba(245,207,135,.18);pointer-events:none;animation:boardPulse 2.8s ease-out infinite}.board-ripple.r1{left:4%;top:5%}.board-ripple.r2{right:4%;bottom:5%;animation-delay:1.4s}@keyframes boardPulse{0%{transform:scale(.7);opacity:0}25%{opacity:.5}100%{transform:scale(1.8);opacity:0}}
+.ladder{stroke:#25140d;stroke-width:1.55%;filter:drop-shadow(2px 3px 1px rgba(0,0,0,.5))}.ladder-highlight{stroke:#a86f3d;stroke-width:.34%;opacity:.8}.ladder-rung{stroke:#321b10;stroke-width:.9%}.ladder-rung-hi{stroke:#c28b51;stroke-width:.23%;opacity:.8}
+.snake{stroke:#17100d;stroke-width:2.2%;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.6));animation:woodSnake 2.4s ease-in-out infinite}.snake-inner{stroke:#8c6545;stroke-width:.38%;opacity:.5}.snake-head{stroke:#0e0907;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.55))}.snake-tongue{stroke:#8d2520}
+@keyframes woodSnake{0%,100%{transform:translate(0,0)}50%{transform:translate(.5px,-.35px)}}
+.token{width:clamp(28px,4vw,46px);height:clamp(28px,4vw,46px);border:3px solid #2a170e;box-shadow:0 5px 8px rgba(0,0,0,.5),inset 0 2px rgba(255,230,186,.45);font-family:Georgia,serif;color:#2a170e;text-shadow:0 1px rgba(255,255,255,.3)}
+.token.user{background:radial-gradient(circle at 35% 25%,#d9b47b,#a36d3c 58%,#5a321b)}.token.bot{background:radial-gradient(circle at 35% 25%,#9c795a,#5b3a25 60%,#25160e);color:#ead0a2}.token.user::before{content:'★';font-size:18px}.token.user{font-size:0}.token.bot::before{content:'CFO';font-size:9px;letter-spacing:.08em}.token.bot{font-size:0}.token.user::after,.token.bot::after{inset:-7px;border:1px solid rgba(224,183,119,.55)}
+.ludo-side{background:linear-gradient(145deg,#e8cf9f,#c79a60);border-color:#81542f;border-top:4px solid #3a2114;border-radius:6px;box-shadow:0 10px 24px rgba(0,0,0,.32);color:#2c1a10}.player-card{background:rgba(255,241,213,.38);border-color:#9a6b40}.player-card.active{outline:3px solid rgba(58,31,16,.25);border-color:#4c2b18}.player-pos{color:#4a2a17}.question-box{background:linear-gradient(145deg,#2a180f,#5a351e);border:1px solid #9b6a3e;box-shadow:inset 0 1px rgba(255,220,171,.18)}.q-number{color:#e6bd7d}.question-box p{color:#e7d0ad}.ludo-opt{background:#ead1a3;color:#2b1a11;border-color:#94633a;font-family:var(--sans);box-shadow:0 2px 0 rgba(60,31,15,.22)}.ludo-opt:hover{background:#f0dcb7}.ludo-opt.correct{border-color:#4d7654;background:#d8e3cf}.ludo-opt.wrong{border-color:#8d3930;background:#ead0c8}.move-log{background:rgba(255,236,201,.5);border:1px solid rgba(111,70,37,.25)}.progress-mini{background:#9d744b}.progress-mini i{background:linear-gradient(90deg,#4d2b18,#c18a4d)}
+.ludo-result{background:linear-gradient(145deg,#24140d,#694327);border:1px solid #a87746}.ludo-result h2{color:#e7c486}.ludo-result p{color:#ead4b1}
+footer{color:#c8a77b}footer a{color:#e0bd87}
+@media(max-width:900px){.ludo-wrap{grid-template-columns:1fr}.ludo-side{order:-1}}
+
+
+/* ===== PROFESSIONAL EXECUTIVE BOARDROOM THEME ===== */
+:root{
+  --navy:#071d26;--navy2:#102f39;--gold:#c99a3b;--gold2:#e0bd72;
+  --paper:#f2e6cc;--paper2:#e6d1a8;--wood:#3b2114;--wood2:#6d4527;
+  --line:#8f6a43;--text:#1b2630;--muted:#667078;
+}
+body{background:
+  radial-gradient(circle at 8% 8%,rgba(255,255,255,.08),transparent 20%),
+  linear-gradient(135deg,#161313,#25211d 45%,#0e1112);
+  color:var(--text);min-height:100vh}
+.top{height:92px;padding:0 42px;background:linear-gradient(90deg,#071a22,#0c2731 55%,#071a22);border-bottom:3px solid #9d6f29;box-shadow:0 6px 22px rgba(0,0,0,.45);display:flex;align-items:center;gap:30px}
+.brand{display:flex;align-items:center;gap:18px;min-width:510px}
+.brand-cfo{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f4ead7;font:700 37px/1 Georgia,serif;letter-spacing:-.04em}
+.brand-cfo .crown{position:absolute;top:-12px;color:#d9aa42;font:700 20px/1 Georgia,serif}
+.brand-divider{height:56px;width:1px;background:#c59645}
+.brand-title strong{display:block;color:#f2e7d3;font:600 30px/1.1 Georgia,serif}
+.brand-title div{margin-top:10px;color:#d4a344;font:700 11px/1 var(--sans);letter-spacing:.2em}
+.brand-title i{font-style:normal;color:#8b7040;padding:0 8px}
+.header-center{margin-left:auto;color:#eee2ce;font:italic 16px/1.35 Georgia,serif;text-align:left;opacity:.9}
+.hdr-r{display:flex;align-items:center;gap:16px;color:#f0e4d0}
+.hdr-r>#stage{display:none}
+.welcome-user{display:flex;align-items:center;gap:10px;padding-left:18px;border-left:1px solid #7e643d;font:15px Georgia,serif;white-space:nowrap}
+.user-icon{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#0d2630;background:#eadfca;font-size:12px}
+#snd{display:none}
+.stepbar{display:none}
+main{max-width:1510px;margin:0 auto;padding:22px 28px 28px}
+.game-shell{display:grid;grid-template-columns:minmax(0,1.78fr) minmax(440px,.92fr);gap:20px;align-items:start}
+.board-column{min-width:0}
+.board-heading{display:flex;align-items:end;justify-content:space-between;margin:0 4px 10px;color:#ead7b5}
+.board-heading h1{margin:0;color:#f1dfbd;font:600 31px/1 Georgia,serif}
+.board-heading-note{font:italic 14px Georgia,serif;color:#cbb994;padding-bottom:6px}
+.game-kicker{margin:0 0 5px;color:#d1a24c;font-size:11px;letter-spacing:.18em}
+.ludo-board-shell{padding:17px;background:
+  linear-gradient(145deg,#24140d,#5a361e 35%,#2b180e);
+  border:2px solid #b47d3c;border-radius:10px;box-shadow:0 18px 42px rgba(0,0,0,.5),inset 0 1px rgba(255,226,181,.32)}
+.ludo-board-shell:before{top:-10px;left:24px;background:#102b34;color:#e7c786;border:1px solid #b98a45;padding:6px 12px;border-radius:3px;font-size:9px}
+.ludo-board{border:8px solid #442615;border-radius:4px;background:#d6b078;box-shadow:inset 0 0 0 2px #efcf91,inset 0 0 30px rgba(70,38,17,.28),0 7px 14px rgba(0,0,0,.45)}
+.ludo-cell{font-family:Georgia,"Times New Roman",serif;color:#3a2516;border-color:rgba(75,45,22,.3);font-weight:700;padding:5px}
+.ludo-cell:nth-child(4n+1){background:#f1ddb2}.ludo-cell:nth-child(4n+2){background:#e4c795}.ludo-cell:nth-child(4n+3){background:#f6e6c4}.ludo-cell:nth-child(4n){background:#d8b57a}
+.ludo-cell:after{inset:3px;border-color:rgba(91,57,26,.12)}
+.ludo-cell.start{box-shadow:inset 0 0 0 3px #0d4f64,inset 0 0 0 5px rgba(255,226,161,.5)}
+.ludo-cell.finish{box-shadow:inset 0 0 0 3px #a8782d,inset 0 0 0 5px rgba(255,226,161,.45)}
+.ludo-cell.start .cell-num,.ludo-cell.finish .cell-num{font-size:clamp(12px,1.35vw,17px);color:#8a5a13}
+.start-mark,.finish-mark{font-size:8px;font-weight:800}
+.start-mark{color:#15566c}.finish-mark{color:#7a5219}
+.cell-mark{font-size:12px}
+.ludo-svg{filter:saturate(.95) contrast(1.05)}
+.ladder{stroke:#6b3c1d;stroke-width:1.55%;filter:drop-shadow(1px 2px 1px rgba(42,20,8,.5))}
+.ladder-highlight{stroke:#d39a52}.ladder-rung{stroke:#75421e}.ladder-rung-hi{stroke:#e0a762}
+.snake{stroke:#b52f2b;stroke-width:2.25%;filter:drop-shadow(2px 3px 2px rgba(44,10,7,.55))}
+.snake-inner{stroke:#ed9c50;stroke-width:.45%;opacity:.8}.snake-head{stroke:#6f211d}
+.token{width:clamp(31px,4.1vw,48px);height:clamp(31px,4.1vw,48px);border:3px solid #f4e4c7;box-shadow:0 5px 10px rgba(0,0,0,.55);font-size:0}
+.token.user{background:radial-gradient(circle at 35% 25%,#34b5df,#08739d 60%,#06465f)}
+.token.bot{background:radial-gradient(circle at 35% 25%,#e768ad,#a62f6f 60%,#641e4a)}
+.token.user:before{content:"";width:13px;height:17px;border-radius:50% 50% 45% 45%;background:#d8f0f8;box-shadow:0 11px 0 -2px #d8f0f8}
+.token.bot:before{content:"";width:13px;height:17px;border-radius:50% 50% 45% 45%;background:#f4d5e8;box-shadow:0 11px 0 -2px #f4d5e8}
+.ludo-side{padding:0;background:transparent;border:0;box-shadow:none;color:#1e2930;min-width:0}
+.players-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;background:linear-gradient(145deg,#102d37,#071c24);padding:16px;border:1px solid #53666b;border-radius:10px 10px 0 0;box-shadow:0 10px 22px rgba(0,0,0,.32)}
+.professional-side .player-card{margin:0;padding:13px 12px;display:flex;align-items:center;gap:11px;border:1px solid #607177;border-radius:8px;background:rgba(5,20,26,.5);color:#fff}
+.professional-side .player-card.active{outline:2px solid rgba(48,171,226,.55);border-color:#2997c7}
+.avatar{flex:0 0 42px;height:42px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.45);font-size:0}
+.avatar:before{content:"";width:13px;height:16px;border-radius:50%;background:#f2eadb;box-shadow:0 11px 0 -2px #f2eadb}
+.avatar-you{background:#083f58}.avatar-bot{background:#5b1e4d}
+.player-info{min-width:0;flex:1}.player-info strong{display:block;font:600 17px Georgia,serif;color:#f2e8d6}.player-info span{display:block;color:#b7ccd1;font-size:12px;margin:2px 0 7px}.player-info small{color:#dce4e5;font-size:11px}.trust-meter{height:6px;margin-top:7px;background:#1d343b;border:1px solid #53676c;border-radius:10px;overflow:hidden}.trust-meter i{display:block;height:100%;background:linear-gradient(90deg,#1d9ed5,#56c5ef)}.bot-meter i{background:linear-gradient(90deg,#d95b9e,#e989bd)}
+.challenge-card{position:relative;background:linear-gradient(145deg,#f4e7ca,#dfc79b);border:1px solid #b89361;border-radius:0 0 9px 9px;padding:20px 22px;box-shadow:0 12px 26px rgba(0,0,0,.32)}
+.challenge-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(93,61,27,.24);padding-bottom:14px;margin-bottom:14px}
+.challenge-icon{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#6b2b8a,#3e1959);color:#f0ddf8;border:1px solid #a17bb7;font-size:24px}
+.challenge-head div{flex:1}.challenge-head span{display:block;color:#4c2c20;font:700 13px var(--sans);letter-spacing:.05em}.challenge-head small{float:right;color:#4b3826;font:600 12px var(--sans)}
+.challenge-card h2{margin:0 0 10px;color:#30203c;font:600 24px/1.2 Georgia,serif}
+.challenge-card p{margin:0;color:#263747;font:15px/1.6 Georgia,serif}
+.challenge-rule{height:1px;background:rgba(76,52,28,.24);margin:15px 0 13px}
+.question-prompt{font-weight:700;font-size:13px;color:#1e2c39;margin-bottom:9px}
+.professional-side .ludo-options{gap:0;border:1px solid #c8b18b;border-radius:9px;overflow:hidden;margin:0}
+.professional-side .ludo-opt{position:relative;margin:0;padding:12px 14px;border:0;border-bottom:1px solid #c8b18b;border-radius:0;background:rgba(255,250,239,.45);font-size:13px;line-height:1.45;color:#1c2b3a;box-shadow:none}
+.professional-side .ludo-opt:last-child{border-bottom:0}.professional-side .ludo-opt:hover{background:#f7ecd5}.professional-side .ludo-opt.correct{background:#dcebdc;color:#234e32}.professional-side .ludo-opt.wrong{background:#f0d6d1;color:#6c2922}
+.submit-row{min-height:22px;margin-top:8px;color:#76552a;font-size:12px}
+.game-status{display:grid;grid-template-columns:repeat(4,1fr);background:#0c252e;border:1px solid #4c6267;border-radius:8px;margin-top:10px;color:#eee3cf;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.game-status>div{position:relative;min-height:82px;padding:10px 8px;text-align:center;border-right:1px solid #41565b}.game-status>div:last-child{border-right:0}
+.game-status span{display:block;font-size:19px;color:#cba052;margin-bottom:3px}.game-status small{display:block;color:#aebfc1;font-size:10px}.game-status b{display:block;color:#fff0cf;font:600 22px Georgia,serif;margin-top:1px}.game-status em{display:block;font-style:normal;font-size:9px;color:#95a9ac}
+.board-legend{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;padding:13px 14px;background:#ead4a8;border:1px solid #9c7548;border-radius:8px;margin-top:9px;color:#4b3420;font-size:11px}
+.board-legend span{display:flex;gap:5px;align-items:center}.board-legend small{color:#725b3f}
+.side-footer{margin-top:9px;padding:10px 13px;background:rgba(10,28,34,.92);border:1px solid #485c60;border-radius:7px;color:#d8c6a5;font-size:11px}.side-footer .progress-mini{margin:7px 0 5px}.side-footer #moveLog{color:#b5c2c4}
+.progress-mini{height:5px;background:#30464c}.progress-mini i{background:linear-gradient(90deg,#2e9fd0,#d09b3f)}
+#qCount{display:none}
+.board-title{top:1.4%;background:rgba(31,18,10,.82);color:#e9cb92}
+@media(max-width:1150px){.top{padding:0 24px}.brand{min-width:auto}.brand-title strong{font-size:25px}.header-center{display:none}.game-shell{grid-template-columns:minmax(0,1.35fr) minmax(390px,.9fr)}}
+@media(max-width:900px){.game-shell{grid-template-columns:1fr}.board-column{order:2}.ludo-side{order:1}.players-panel{grid-template-columns:1fr 1fr}.board-heading-note{display:none}}
+@media(max-width:620px){.top{height:78px;padding:0 14px}.brand{gap:10px}.brand-cfo{font-size:29px}.brand-divider{height:44px}.brand-title strong{font-size:19px}.brand-title div{font-size:8px;letter-spacing:.12em}.welcome-user{display:none}main{padding:12px}.players-panel{grid-template-columns:1fr}.challenge-card{padding:15px}.game-status{grid-template-columns:repeat(2,1fr)}.game-status>div:nth-child(2){border-right:0}.game-status>div:nth-child(-n+2){border-bottom:1px solid #41565b}.board-legend{grid-template-columns:1fr}.board-heading h1{font-size:25px}.ludo-board-shell{padding:9px}}
+
+/* ===== REALISTIC SNAKE ANIMATION ===== */
+.ludo-board .snake{stroke:#17100d;stroke-width:2.75%;stroke-linecap:round;stroke-linejoin:round;fill:none;filter:drop-shadow(2px 4px 2px rgba(25,10,5,.72));transform-box:fill-box;transform-origin:center;animation:snakeBodySway 2.15s ease-in-out infinite}
+.ludo-board .snake-inner{stroke:#8f5a3b;stroke-width:.42%;stroke-linecap:round;fill:none;opacity:.72;stroke-dasharray:1.1 .65;animation:snakeScaleFlow 1.5s linear infinite}
+.ludo-board .snake-head-group{transform-box:fill-box;transform-origin:center;animation:snakeHeadLife 1.15s ease-in-out infinite;filter:drop-shadow(1px 3px 1px rgba(0,0,0,.58))}
+.ludo-board .snake-head{fill:url(#snakeHead);stroke:#120907;stroke-width:.42%;}
+.ludo-board .snake-eye{fill:#f6e7bf;stroke:#20100c;stroke-width:.12%}
+.ludo-board .snake-pupil{fill:#090504}
+.ludo-board .snake-tongue{stroke:#b8322d;stroke-width:.3%;stroke-linecap:round;animation:tongueFlick .7s ease-in-out infinite}
+.ludo-board .snake-fang{fill:#fff4dc;stroke:#3a1712;stroke-width:.08%}
+.ludo-board.snake-active .snake{animation:snakeStrike .48s ease-in-out 2, snakeBodySway 2.15s ease-in-out infinite}
+.ludo-board.snake-active .snake-head-group{animation:snakeStrikeHead .48s ease-in-out 2, snakeHeadLife 1.15s ease-in-out infinite}
+@keyframes snakeBodySway{0%,100%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(.22px,-.12px) rotate(.18deg)}50%{transform:translate(-.18px,.16px) rotate(-.18deg)}75%{transform:translate(.16px,.08px) rotate(.12deg)}}
+@keyframes snakeScaleFlow{to{stroke-dashoffset:-7}}
+@keyframes snakeHeadLife{0%,100%{transform:scale(1) rotate(0deg)}45%{transform:scale(1.035) rotate(-1.5deg)}70%{transform:scale(.985) rotate(1deg)}}
+@keyframes snakeStrike{0%,100%{transform:translate(0,0)}40%{transform:translate(-.7px,.5px) scale(1.015)}70%{transform:translate(.55px,-.35px) scale(.99)}}
+@keyframes snakeStrikeHead{0%,100%{transform:scale(1)}45%{transform:scale(1.15) translate(-.3px,-.2px)}75%{transform:scale(.96)}}
+
+
+/* ===== FIXES: positioning for board label and title ===== */
+.ludo-board-shell:before{position:absolute;z-index:8;display:block}
+.board-title{position:absolute;left:50%;transform:translateX(-50%);z-index:6;padding:3px 12px;border-radius:99px;font:700 10px var(--sans);letter-spacing:.1em;white-space:nowrap;pointer-events:none}
+.board-ripple,.board-pin{display:none}
+.token{pointer-events:none}
+.ludo-opt:disabled{cursor:not-allowed}
+
+/* ===== HUD REDESIGN (presentation only; no game or survey logic touched) =====
+   Tokens: one palette, one accent. Hierarchy: 1 board + question, 2 players/trust, 3 status, 4 help. */
+:root{--h-bg:#0b232b;--h-sf:#12303a;--h-ln:#2c4850;--h-tx:#eef2f1;--h-mu:#9fb4b9;--h-ac:#d4a84f;--h-you:#3fb6e0;--h-alex:#d97aa9;--h-good:#4fb286;--h-bad:#e0675f;--h-paper:#fbf8f1}
+.game-shell{grid-template-columns:minmax(0,1fr) clamp(340px,31vw,430px);gap:22px}
+.ludo-side{display:flex;flex-direction:column;gap:10px;position:sticky;top:12px;align-self:start;max-height:calc(100vh - 24px);overflow:auto;scrollbar-width:thin}
+.players-panel{order:1;padding:10px;gap:8px;border-radius:12px;background:var(--h-bg);border:1px solid var(--h-ln);box-shadow:none}
+.challenge-card{order:2}.game-status{order:3}.side-footer{order:4}.board-legend{order:5}
+/* Players + Trust: compact, with the 50-Trust win threshold marked on each meter */
+.professional-side .player-card{padding:8px 10px;gap:9px;background:var(--h-sf);border:1px solid var(--h-ln);border-radius:9px;opacity:.7;transition:opacity .25s,border-color .25s,box-shadow .25s}
+.professional-side .player-card.active{opacity:1;outline:0;border-color:var(--h-you);box-shadow:0 0 0 3px rgba(63,182,224,.18)}
+.professional-side .player-card:nth-child(2).active{border-color:var(--h-alex);box-shadow:0 0 0 3px rgba(217,122,169,.2)}
+.avatar{flex:0 0 32px;height:32px}.avatar:before{width:10px;height:12px;box-shadow:0 8px 0 -2px #f2eadb}
+.player-info strong{font:600 14px var(--sans);color:var(--h-tx)}
+.player-info span{font-size:11px;margin:0 0 4px;color:var(--h-mu)}
+.player-info small{font:600 11px var(--sans);color:var(--h-tx);font-variant-numeric:tabular-nums;position:relative;display:block}
+.trust-meter{position:relative;height:6px;border-radius:99px;background:#24414a;overflow:visible;margin-top:4px}
+.trust-meter i{display:block;height:100%;border-radius:99px;background:var(--h-good);transition:width .5s ease,background .3s}
+.trust-meter i.low{background:var(--h-bad)}
+.trust-meter:after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--h-ac);border-radius:2px}
+.delta{position:absolute;right:0;top:-2px;font:700 13px var(--sans);animation:hudFloat 1.4s ease-out forwards}
+.delta.up{color:var(--h-good)}.delta.dn{color:var(--h-bad)}
+@keyframes hudFloat{from{opacity:1;transform:translateY(4px)}to{opacity:0;transform:translateY(-14px)}}
+/* Question card: the single dominant element */
+.challenge-card{background:var(--h-paper);border:1px solid #d8cfb8;border-top:3px solid var(--h-ac);border-radius:12px;padding:16px 18px;box-shadow:0 8px 22px rgba(0,0,0,.22);transition:opacity .3s,filter .3s}
+.challenge-head{padding-bottom:10px;margin-bottom:10px}
+.challenge-icon{width:34px;height:34px;font-size:18px;background:var(--h-bg);border-color:var(--h-ln);color:var(--h-ac)}
+.challenge-head span{font:700 11px var(--sans);letter-spacing:.1em;color:#5a4a2a;text-transform:uppercase}
+.challenge-card h2{font:600 20px/1.25 Georgia,'Fraunces',serif;color:#1c2b30;margin-bottom:6px}
+.challenge-card p{font:15px/1.55 Georgia,serif;color:#2b3b40}
+.challenge-rule{margin:12px 0 10px}
+.question-prompt{font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#6a5a38}
+.professional-side .ludo-opt{min-height:46px;padding:11px 12px 11px 44px;font:14px/1.45 var(--sans);color:#1c2b30;text-align:left;transition:background .15s}
+.professional-side .ludo-opt b{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--h-bg);color:#fff;font:700 11px var(--sans)}
+.professional-side .ludo-opt:hover:not(:disabled){background:#f1e8d0}
+.professional-side .ludo-opt:focus-visible{outline:3px solid var(--h-you);outline-offset:-3px}
+.submit-row{color:#6a5a38;font:600 11px var(--sans)}
+/* Status bar: one slim row (secondary) */
+.game-status{background:var(--h-bg);border:1px solid var(--h-ln);border-radius:10px;margin:0;box-shadow:none}
+.game-status>div{min-height:50px;padding:7px 4px;border-color:var(--h-ln)}
+.game-status span,.game-status em{display:none}
+.game-status small{font:600 9px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--h-mu)}
+.game-status b{font:700 17px var(--sans);font-variant-numeric:tabular-nums;color:var(--h-tx)}
+.side-footer{margin:0;background:var(--h-bg);border-color:var(--h-ln);border-radius:10px}
+.side-footer #moveLog{color:var(--h-tx);font-size:12px;line-height:1.45;margin-top:4px}
+/* Legend: tertiary help, one quiet row */
+.board-legend{margin:0;padding:8px 10px;gap:4px 10px;background:transparent;border:1px dashed #b9ad8e;color:#51452c;font-size:10.5px;opacity:.75}
+.board-legend small{display:none}
+/* Contextual UI: the HUD reacts to the game phase (data-phase set by hudAttach) */
+.ludo-side{--fade:.42}
+.ludo-side[data-phase=question] :is(.game-status,.board-legend,.side-footer){opacity:var(--fade);transition:opacity .3s}
+.ludo-side[data-phase=question] :is(.game-status,.board-legend,.side-footer):hover{opacity:1}
+.ludo-side[data-phase=question] .submit-row:after{content:"Tip: press 1–7 to rate";float:right;color:#8a7a58;font-weight:500}
+.ludo-side[data-phase=wait] .challenge-card{opacity:.62;filter:saturate(.75)}
+.ludo-side[data-phase=wait] .side-footer{border-color:var(--h-ac)}
+.ludo-side[data-phase=action] .professional-side .ludo-opt,.ludo-side[data-phase=action] .ludo-opt{padding-left:44px}
+@media(max-width:900px){.ludo-side{position:static;max-height:none;overflow:visible}.players-panel{grid-template-columns:1fr 1fr}.board-legend{grid-template-columns:repeat(4,auto);justify-content:start}}
+@media(max-width:560px){.challenge-card{padding:14px}.challenge-card h2{font-size:18px}.board-legend{grid-template-columns:1fr 1fr}.ludo-side[data-phase=question] .submit-row:after{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ===== ENGAGEMENT / UX LAYER (presentation only) ===== */
+.hud-toast{position:absolute;left:50%;top:9%;transform:translateX(-50%);z-index:12;max-width:86%;padding:9px 18px;border-radius:99px;background:rgba(11,35,43,.94);border:1.5px solid var(--h-ac);color:#fff;font:700 clamp(12px,1.6vw,15px) var(--sans);box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;text-align:center;animation:hudPop 2.4s ease forwards}
+.hud-toast.up{border-color:var(--h-good)}.hud-toast.dn{border-color:var(--h-bad)}.hud-toast.you{border-color:var(--h-you)}.hud-toast.alex{border-color:var(--h-alex)}
+@keyframes hudPop{0%{opacity:0;transform:translate(-50%,-14px) scale(.9)}12%{opacity:1;transform:translate(-50%,0) scale(1.04)}18%{transform:translate(-50%,0) scale(1)}82%{opacity:1}100%{opacity:0;transform:translate(-50%,-6px)}}
+.ludo-cell.here-you{box-shadow:inset 0 0 0 3px var(--h-you)!important}
+.ludo-cell.here-alex{box-shadow:inset 0 0 0 3px var(--h-alex)!important}
+.ludo-cell.here-you.here-alex{box-shadow:inset 0 0 0 3px var(--h-you),inset 0 0 0 6px var(--h-alex)!important}
+.token.hop{animation:hudHop .7s ease}
+@keyframes hudHop{0%,100%{filter:none}40%{filter:drop-shadow(0 0 9px #ffd27a) drop-shadow(0 0 3px #fff)}}
+.confetti{position:absolute;top:-4%;width:8px;height:12px;border-radius:2px;z-index:11;pointer-events:none;animation:hudFall 2.4s ease-in forwards}
+@keyframes hudFall{to{transform:translateY(560px) rotate(540deg);opacity:0}}
+.coach{order:0;background:var(--h-paper);border:1px solid #d8cfb8;border-left:4px solid var(--h-ac);border-radius:10px;padding:11px 13px;font:13px/1.5 var(--sans);color:#2b3b40;position:relative}
+.coach b{color:#1c2b30}.coach button{margin-top:8px;border:0;border-radius:99px;background:var(--h-bg);color:#fff;font:700 12px var(--sans);padding:7px 14px;cursor:pointer}
+.coach button:focus-visible{outline:3px solid var(--h-you);outline-offset:2px}
+.streak{display:inline-block;margin-left:8px;padding:1px 8px;border-radius:99px;background:rgba(212,168,79,.18);color:var(--h-ac);font:700 11px var(--sans)}
+.streak[hidden]{display:none}
+.professional-side .ludo-opt:active:not(:disabled){transform:scale(.99)}
+.progress-mini i{transition:width .5s ease;box-shadow:0 0 8px rgba(212,168,79,.6)}
+
+/* ===== COLOUR SYSTEM FIX: one palette (navy + teal + brass + parchment), readable board, colour-coded squares ===== */
+body{background:radial-gradient(circle at 10% 6%,rgba(255,255,255,.07),transparent 22%),linear-gradient(135deg,#071d26,#0d2a35 50%,#06161c)!important;color:#1c2b30}
+.board-heading h1{color:#f4ead7}.board-heading-note{color:#b9c9cc}.game-kicker{color:var(--h-ac)}
+.ludo-board-shell{background:linear-gradient(145deg,#0b232b,#12303a 55%,#0b232b)!important;border:2px solid #c99a3b!important;border-bottom-width:6px!important}
+.ludo-board-shell:before{content:'CFO SNAKES & LADDERS'!important;background:#0b232b!important;color:#e0bd72!important;border-color:#c99a3b!important}
+.ludo-board{background:#0b232b!important;border:8px solid #0b232b!important;box-shadow:inset 0 0 0 2px #c99a3b,0 7px 16px rgba(0,0,0,.45)!important}
+.ludo-board:after,.board-shine{display:none!important}
+.ludo-cell{background-image:none!important;color:#22343a!important;text-shadow:none!important;border:1px solid rgba(20,48,58,.18)!important}
+.ludo-cell:nth-child(4n+1){background-color:#f7f2e4!important}.ludo-cell:nth-child(4n+2){background-color:#ece4cc!important}
+.ludo-cell:nth-child(4n+3){background-color:#faf6ea!important}.ludo-cell:nth-child(4n){background-color:#e2d8bc!important}
+.ludo-cell.ladder-start{background-color:#d6ecdc!important}.ludo-cell.snake-start{background-color:#f6d9d5!important}
+.ludo-cell.chal{background-color:#e3d9f1!important}.ludo-cell.pwr{background-color:#fbecb8!important}
+.ludo-cell.start{background-color:#cfe6f2!important;box-shadow:inset 0 0 0 3px #1f6f78!important}
+.ludo-cell.finish{background-color:#f3dfa3!important;box-shadow:inset 0 0 0 3px #a8782d!important}
+.ludo-cell.start .cell-num,.ludo-cell.finish .cell-num{color:#14303a!important}.start-mark{color:#14586a!important}.finish-mark{color:#6b4710!important}
+.cell-num{opacity:.9!important}
+.ladder{stroke:#9a6a17!important;filter:drop-shadow(0 0 1px #3b2a0c) drop-shadow(1px 2px 1px rgba(0,0,0,.35))!important}
+.ladder-highlight,.ladder-rung-hi{stroke:#f2cf7c!important}.ladder-rung{stroke:#7d5412!important}
+.snake{stroke:#c23b32!important;filter:drop-shadow(0 0 1px #4a0f0b) drop-shadow(1px 2px 2px rgba(0,0,0,.4))!important;animation:none!important}
+.snake-inner{stroke:#f6b266!important;opacity:.9!important}.snake-head{stroke:#7a1f1a!important}
+.ludo-svg{filter:none!important}
+/* parchment cards and result panels share the same neutral paper + navy */
+.card,.hud,.qpanel,.ludo-intro{background:linear-gradient(145deg,#f8f4e8,#ebe3cc)!important;border:1px solid #d3c9ad!important;color:#1c2b30!important;box-shadow:0 8px 22px rgba(0,0,0,.25)!important}
+.ludo-intro h2,.ludo-intro p,.card h2,.card h3,.card p{color:#1c2b30}.ludo-intro .mut,.card .mut{color:#4e5f64}
+.rule-cards>div{background:#fff!important;border:1px solid #d3c9ad!important;color:#1c2b30!important}.rule-cards small{color:#51636a!important}
+.ludo-result{background:linear-gradient(145deg,#0b232b,#12303a)!important;border:1px solid #c99a3b!important}.ludo-result h2{color:#f0d9a0}.ludo-result p{color:#e6eeee}
+.board-legend{background:#f8f4e8!important;border:1px solid #d3c9ad!important;color:#33454b!important;opacity:.9}
+.professional-side .player-card:nth-child(1) .avatar-you{background:#0b5f80}
+footer,footer a{color:#aebfc1}footer a{color:#e0bd72}
+
+/* ===== BOARD ART + FIRST-PAGE INPUT FIX ===== */
+:root{color-scheme:light}
+input[type=text],select,textarea,input.big{color:#1c2b30!important;-webkit-text-fill-color:#1c2b30;background:#fff!important;caret-color:#1c2b30;border:1.5px solid #9fb0b3!important;font-size:16px}
+input[type=text]::placeholder,textarea::placeholder{color:#6b7c80;opacity:1}
+input[type=text]:focus,select:focus,textarea:focus{outline:3px solid rgba(31,111,120,.35);border-color:#1f6f78!important}
+input:-webkit-autofill{-webkit-text-fill-color:#1c2b30;box-shadow:0 0 0 40px #fff inset}
+select option{color:#1c2b30;background:#fff}
+.card label{color:#1c2b30}
+.ludo-cell{position:relative}
+.ludo-cell .cell-num{position:absolute;left:4px;top:2px;font-size:clamp(8px,1.05vw,12px)!important;line-height:1}
+.ludo-cell .cell-mark{position:absolute;right:3px;bottom:2px;font-size:clamp(9px,1.2vw,14px)}
+
+.ludo-cell.start .start-mark,.ludo-cell.finish .finish-mark{position:absolute;left:0;right:0;bottom:3px;text-align:center}
+.ludo-svg .sn,.ludo-svg .ld{transition:opacity .2s}
+.snake-active .sn[data-snake]{animation:snShake .5s ease 2}
+@keyframes snShake{25%{transform:translate(.4px,-.3px)}75%{transform:translate(-.4px,.3px)}}
+
+/* ===== HIGH-CONTRAST REWARD SQUARES, CARD TRAY, LIVELY SNAKES ===== */
+.ludo-cell.chal{background-color:#4b2487!important;box-shadow:inset 0 0 0 2px #c9a7ff!important}
+.ludo-cell.pwr{background-color:#ffb703!important;box-shadow:inset 0 0 0 2px #7a4b00!important}
+.ludo-cell.chal .cell-num{color:#fff!important}.ludo-cell.pwr .cell-num{color:#1a1200!important}
+.ludo-cell.chal .cell-mark,.ludo-cell.pwr .cell-mark{position:absolute;left:0;right:0;top:0;bottom:0;display:grid;place-items:center;font-size:clamp(16px,2.6vw,28px);animation:markPulse 2s ease-in-out infinite}
+@keyframes markPulse{50%{transform:scale(1.14)}}
+.lg{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px}
+.lg i{width:22px;height:22px;border-radius:5px;display:inline-grid;place-items:center;font-style:normal;font-size:13px}
+.l-lad i{background:#d6ecdc;border:2px solid #9a6a17}.l-snk i{background:#f6d9d5;border:2px solid #c23b32}.l-chal i{background:#4b2487}.l-pwr i{background:#ffb703}
+.board-legend{display:flex!important;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.ludo-side[data-phase=question] .board-legend{opacity:1!important}
+#answerStatus{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.hand-t{font:700 11px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#4b3a14}
+.hand-chip{background:#0b232b;color:#ffd166;border:1px solid #c99a3b;border-radius:99px;padding:4px 10px;font:700 12px var(--sans);animation:chipPop .45s ease}
+.hand-chip.armed{background:#ffb703;color:#1a1200;border-color:#7a4b00}
+.hand-none{font:12px var(--sans);color:#51636a}
+@keyframes chipPop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.snk-eye{transform-box:fill-box;transform-origin:center;animation:snkBlink 4.2s infinite}
+@keyframes snkBlink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.snk-tongue{transform-box:fill-box;transform-origin:left center;animation:snkTongue 1.7s ease-in-out infinite}
+@keyframes snkTongue{0%,55%,100%{transform:scaleX(.5);opacity:.5}70%{transform:scaleX(1.25);opacity:1}85%{transform:scaleX(.9);opacity:1}}
+.snake-active .sn[data-snake]{animation:snHit .5s ease 2}
+@keyframes snHit{50%{filter:brightness(1.35) drop-shadow(0 0 3px #fff)}}
+
+/* ===== THEMED ZONES, SNAKE LABELS, EFFECTS ===== */
+.ludo-board .ludo-cell.z1.a{background-color:#e9eff3!important}.ludo-board .ludo-cell.z1.b{background-color:#d8e2e9!important}
+.ludo-board .ludo-cell.z2.a{background-color:#e9f3e6!important}.ludo-board .ludo-cell.z2.b{background-color:#d8e9d3!important}
+.ludo-board .ludo-cell.z3.a{background-color:#f1eaf6!important}.ludo-board .ludo-cell.z3.b{background-color:#e4daef!important}
+.ludo-board .ludo-cell.z4.a{background-color:#faf0d8!important}.ludo-board .ludo-cell.z4.b{background-color:#f0dfb5!important}
+.ludo-board .ludo-cell.ladder-start{background-color:#c9ebd2!important}.ludo-board .ludo-cell.snake-start{background-color:#f6d0cb!important}
+.ludo-board .ludo-cell.chal{background-color:#4b2487!important}.ludo-board .ludo-cell.pwr{background-color:#ffb703!important}
+.ludo-board .ludo-cell.start{background-color:#cfe6f2!important}.ludo-board .ludo-cell.finish{background-color:#f3d98e!important}
+.zone-tag{position:absolute;right:5px;z-index:6;pointer-events:none;padding:2px 8px;border-radius:99px;background:rgba(11,35,43,.86);color:#f0d9a0;font:700 clamp(7px,.85vw,10px) var(--sans);letter-spacing:.08em;white-space:nowrap}
+@media(max-width:560px){.zone-tag span{display:none}}
+.ludo-svg .lbl{font:700 1.8px var(--sans);fill:#1c2b30;stroke:#fff;stroke-width:.7px;paint-order:stroke;letter-spacing:.04em}
+.fx{position:absolute;z-index:10;pointer-events:none;font-style:normal;font-size:clamp(11px,2vw,20px);opacity:0;animation:fxSpark 1.2s ease-out forwards}
+.fx.dust{animation-name:fxDust}
+@keyframes fxSpark{0%{opacity:0;transform:translateY(6px) scale(.5)}25%{opacity:1}100%{opacity:0;transform:translateY(-26px) scale(1.3) rotate(40deg)}}
+@keyframes fxDust{0%{opacity:0;transform:scale(.4)}30%{opacity:.9}100%{opacity:0;transform:translate(10px,12px) scale(1.8)}}
+.ludo-cell.finish .finish-mark{font-size:clamp(7px,.9vw,11px)}
+
+/* ===== WOODEN BOARD + CUTE CHARACTERS ===== */
+.ludo-board-shell{background:linear-gradient(145deg,#7a4b24,#5a3418 55%,#6b4220)!important;border:2px solid #3b2410!important;border-bottom-width:7px!important;box-shadow:0 14px 30px rgba(0,0,0,.5),inset 0 2px 0 rgba(255,220,160,.35)!important}
+.ludo-board-shell:before{content:'CFO SNAKES & LADDERS'!important;background:#3b2410!important;color:#f4dca0!important;border-color:#c99a3b!important}
+.ludo-board{background:#4a2a14!important;border:10px solid #4a2a14!important;box-shadow:inset 0 0 0 2px #9a6a35,inset 0 0 14px rgba(0,0,0,.5),0 6px 14px rgba(0,0,0,.5)!important}
+.ludo-board .ludo-cell{--g:repeating-linear-gradient(91deg,rgba(80,42,14,.10) 0 2px,transparent 2px 7px),repeating-linear-gradient(89deg,rgba(255,240,210,.10) 0 1px,transparent 1px 12px),linear-gradient(180deg,rgba(255,245,220,.12),rgba(60,30,10,.10));border:1px solid rgba(60,30,10,.5)!important;box-shadow:inset 1px 1px 0 rgba(255,236,200,.5),inset -1px -1px 0 rgba(60,30,10,.35);color:#2b1708!important}
+.ludo-board .ludo-cell.z1.a{background:var(--g),#ecd1a0!important}.ludo-board .ludo-cell.z1.b{background:var(--g),#e0c28b!important}
+.ludo-board .ludo-cell.z2.a{background:var(--g),#dbb177!important}.ludo-board .ludo-cell.z2.b{background:var(--g),#cf9f62!important}
+.ludo-board .ludo-cell.z3.a{background:var(--g),#c58a55!important}.ludo-board .ludo-cell.z3.b{background:var(--g),#b97d49!important}
+.ludo-board .ludo-cell.z4.a{background:var(--g),#e8c273!important}.ludo-board .ludo-cell.z4.b{background:var(--g),#dcb25f!important}
+.ludo-board .ludo-cell .cell-num{color:#2b1708!important;opacity:.92!important}
+/* ladder / snake bases and start/finish are marked with inlaid coloured rings (the wood stays visible) */
+.ludo-board .ludo-cell.ladder-start{box-shadow:inset 0 0 0 3px #2f8f4e,inset 0 0 0 5px rgba(255,255,255,.55)!important}
+.ludo-board .ludo-cell.snake-start{box-shadow:inset 0 0 0 3px #c23b32,inset 0 0 0 5px rgba(255,255,255,.55)!important}
+.ludo-board .ludo-cell.start{box-shadow:inset 0 0 0 3px #1f86b5,inset 0 0 0 5px rgba(255,255,255,.6)!important}
+.ludo-board .ludo-cell.finish{box-shadow:inset 0 0 0 3px #7a4b00,inset 0 0 0 5px #ffd35c!important}
+.ludo-board .ludo-cell.start .start-mark{color:#0b4660!important}.ludo-board .ludo-cell.finish .finish-mark{color:#5a3300!important}
+/* ⚔️ / ✨ squares: glossy round inlaid gems, clearly visible on wood */
+.ludo-board .ludo-cell.chal .cell-num,.ludo-board .ludo-cell.pwr .cell-num{color:#2b1708!important}
+.ludo-board .ludo-cell.chal .cell-mark,.ludo-board .ludo-cell.pwr .cell-mark{position:absolute;left:50%;top:50%;right:auto;bottom:auto;width:74%;height:74%;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;font-size:clamp(13px,2.2vw,24px);border:2px solid #fff6dc;box-shadow:0 2px 5px rgba(0,0,0,.55),inset 0 -3px 5px rgba(0,0,0,.28),inset 0 3px 4px rgba(255,255,255,.4);animation:badgePulse 2s ease-in-out infinite}
+.ludo-board .ludo-cell.chal .cell-mark{background:radial-gradient(circle at 35% 30%,#9a66e0,#4b2487 68%)}
+.ludo-board .ludo-cell.pwr .cell-mark{background:radial-gradient(circle at 35% 30%,#ffe685,#f0a500 68%)}
+@keyframes badgePulse{50%{transform:translate(-50%,-50%) scale(1.1)}}
+.ludo-svg .lbl{fill:#fff6dc!important;stroke:#2e1a0b!important;stroke-width:.85px!important;paint-order:stroke}
+.l-lad i{background:#f4ead0!important;border:2px solid #3a2608!important}.l-chal i{background:radial-gradient(circle at 35% 30%,#9a66e0,#4b2487)!important;border-radius:50%!important}.l-pwr i{background:radial-gradient(circle at 35% 30%,#ffe685,#f0a500)!important;border-radius:50%!important}
+.ludo-board .ludo-cell.here-you{box-shadow:inset 0 0 0 3px #1f9ac7,inset 0 0 0 5px #fff!important}
+.ludo-board .ludo-cell.here-alex{box-shadow:inset 0 0 0 3px #d9559e,inset 0 0 0 5px #fff!important}
+.ludo-board .ludo-cell.here-you.here-alex{box-shadow:inset 0 0 0 3px #1f9ac7,inset 0 0 0 6px #d9559e!important}
+/* miniature characters */
+.token{width:clamp(30px,5vw,56px)!important;height:clamp(36px,6vw,67px)!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;transform:translate(-50%,-68%)!important;display:block!important}
+.token::before,.token::after{display:none!important;content:none!important}
+.token .chr{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.4))}
+.token .chr-in{transform-box:fill-box;transform-origin:50% 100%;animation:chrBob 1.9s ease-in-out infinite}
+.token.bot .chr-in{animation-delay:.7s}
+@keyframes chrBob{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-1.3px) scaleY(1.035)}}
+.token.hop .chr-in{animation:chrJump .6s ease}
+@keyframes chrJump{0%{transform:none}35%{transform:translateY(-9px) scale(1.06,.95)}70%{transform:scale(.96,1.05)}100%{transform:none}}
+.chr .eyes,.chr-head .eyes{transform-box:fill-box;transform-origin:center;animation:snkBlink 4.2s infinite}
+.tk-name{position:absolute;left:50%;top:-9px;transform:translateX(-50%);font:800 clamp(7px,.9vw,10px) var(--sans);color:#fff;padding:1px 6px;border-radius:99px;letter-spacing:.06em;box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.token.user .tk-name{background:#0b6a96}.token.bot .tk-name{background:#a62f6f}
+.avatar{background:#fff3dc!important;overflow:hidden;padding:0!important}.avatar:before,.avatar:after{display:none!important}.avatar .chr-head{width:100%;height:100%;display:block}
+
+/* ===== BOARD LOOK FROM REFERENCE: thick walnut frame, black inner edge, maple grid, big serif numbers, felt dice tray ===== */
+.ludo-board-shell{background:repeating-linear-gradient(92deg,rgba(30,14,4,.13) 0 2px,transparent 2px 9px),linear-gradient(145deg,#8f5e2e,#6a3f1c 45%,#80502a)!important;padding:clamp(14px,3.2vw,34px)!important;border:2px solid #2e1809!important;border-radius:6px!important;box-shadow:0 18px 36px rgba(0,0,0,.55),inset 0 3px 0 rgba(255,225,170,.42),inset 0 -4px 0 rgba(0,0,0,.35)!important}
+.ludo-board{border:4px solid #140a05!important;background:#140a05!important;box-shadow:0 0 0 2px #b5803f,inset 0 0 16px rgba(0,0,0,.35)!important}
+.ludo-board .ludo-cell{--g:repeating-linear-gradient(90deg,rgba(150,100,50,.07) 0 1px,transparent 1px 6px),linear-gradient(180deg,rgba(255,250,235,.32),rgba(190,140,80,.08));border:1px solid rgba(70,40,15,.62)!important;box-shadow:none}
+.ludo-board .ludo-cell.z1.a{background:var(--g),#f3e0b9!important}.ludo-board .ludo-cell.z1.b{background:var(--g),#efdbb0!important}
+.ludo-board .ludo-cell.z2.a{background:var(--g),#f1dcb0!important}.ludo-board .ludo-cell.z2.b{background:var(--g),#ecd6a6!important}
+.ludo-board .ludo-cell.z3.a{background:var(--g),#efd8a8!important}.ludo-board .ludo-cell.z3.b{background:var(--g),#e9d19c!important}
+.ludo-board .ludo-cell.z4.a{background:var(--g),#f5e0ac!important}.ludo-board .ludo-cell.z4.b{background:var(--g),#f0d9a2!important}
+.ludo-board .ludo-cell .cell-num{font:700 clamp(10px,1.7vw,20px) Georgia,'Times New Roman',serif!important;color:#3a2410!important;left:5px;top:2px;opacity:1!important}
+.ludo-board .ludo-cell.start .start-mark,.ludo-board .ludo-cell.finish .finish-mark{font:700 clamp(7px,1vw,12px) Georgia,serif;letter-spacing:.06em;color:#3a2410!important}
+.dice-tray{position:relative;margin:clamp(8px,1.6vw,16px) auto -4px;width:clamp(200px,52%,360px);padding:10px 14px;background:linear-gradient(#21635a,#14413b);border:4px solid #6a3f1c;border-bottom:0;border-radius:22px 22px 0 0;display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:inset 0 3px 8px rgba(0,0,0,.45)}
+.die{width:clamp(40px,6vw,58px);aspect-ratio:1;background:linear-gradient(145deg,#fffdf4,#e0d9c4);border-radius:20%;box-shadow:0 4px 8px rgba(0,0,0,.55),inset 0 -3px 4px rgba(0,0,0,.18);display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:15%;gap:6%}
+.die i{border-radius:50%}.die i.on{background:radial-gradient(circle at 35% 30%,#4a4a4a,#111)}
+.die.roll{animation:dieRoll .7s cubic-bezier(.2,.8,.3,1)}
+@keyframes dieRoll{0%{transform:rotate(-220deg) scale(.55) translateY(-18px)}60%{transform:rotate(14deg) scale(1.12)}100%{transform:none}}
+.die-cap{color:#e9f3df;font:700 clamp(11px,1.3vw,14px) var(--sans);max-width:120px;line-height:1.3}
+
+/* ===== CASINO TABLE UI ===== */
+body{background:radial-gradient(circle at 50% -10%,#3a1a22,#150a0e 62%),#0a0507!important}
+body.has-dock{padding-bottom:clamp(70px,13vw,104px)}
+.game-shell{background:radial-gradient(ellipse at 50% 38%,#1f7a52 0%,#145a3c 55%,#0b3624 100%);border:10px solid #5a3418;border-radius:26px;padding:clamp(10px,2vw,22px);box-shadow:0 0 0 3px #2e1809,0 20px 44px rgba(0,0,0,.6),inset 0 0 70px rgba(0,0,0,.5);position:relative;outline:2px dashed rgba(240,217,160,.3);outline-offset:-9px}
+.game-shell:before{content:"";position:absolute;inset:0;border-radius:16px;pointer-events:none;background:repeating-radial-gradient(circle at 30% 30%,rgba(255,255,255,.03) 0 1px,transparent 1px 3px)}
+.board-heading h1,.board-heading-note{text-shadow:0 2px 4px rgba(0,0,0,.5)}
+#snd{display:inline-flex!important}
+/* answer cards */
+#ludoOptions.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;perspective:900px}
+@media(max-width:620px){#ludoOptions.cards{grid-template-columns:1fr}}
+.ludo-opt.card{position:relative;min-height:96px;padding:30px 12px 24px!important;text-align:left;border:2px solid #2b1a0e!important;border-radius:12px!important;background:linear-gradient(160deg,#fffef8,#efe5cc 70%,#e6d9b8)!important;box-shadow:0 6px 0 #b9a36f,0 10px 16px rgba(0,0,0,.35);color:#1c2b30;font:600 13.5px/1.4 var(--sans);transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--ty,0px));transition:transform .18s ease,box-shadow .18s,opacity .25s;transform-style:preserve-3d;cursor:pointer}
+.ludo-opt.card:hover:not(:disabled){--ty:-6px;box-shadow:0 12px 0 #b9a36f,0 18px 24px rgba(0,0,0,.4)}
+.ludo-opt.card b{position:absolute!important;left:9px!important;top:6px!important;transform:none!important;width:auto!important;height:auto!important;border-radius:0!important;background:none!important;color:#1c2b30!important;font:800 15px Georgia,serif!important;display:flex!important;flex-direction:column;line-height:1;place-items:initial!important}
+.ludo-opt.card b em{font-style:normal;font-size:14px}
+.ludo-opt.card:nth-child(2) b,.ludo-opt.card:nth-child(3) b{color:#c0262b!important}
+.ludo-opt.card:after{content:attr(data-s);position:absolute;right:9px;bottom:5px;font:800 13px Georgia,serif;transform:rotate(180deg);opacity:.8}
+.ludo-opt.card.dim{opacity:.5;filter:saturate(.6)}
+.ludo-opt.card.sel{--ty:-10px;opacity:1;filter:none;box-shadow:0 0 0 3px #d4a84f,0 14px 22px rgba(0,0,0,.45);animation:cardFlip .5s ease}
+@keyframes cardFlip{0%{transform:perspective(700px) rotateY(0)}50%{transform:perspective(700px) rotateY(90deg) scale(1.03)}100%{transform:perspective(700px) rotateY(0)}}
+.ludo-opt.card.locked{background:linear-gradient(160deg,#fff4c9,#f3d98e)!important;border-color:#7a4b00!important;animation:cardLock .5s ease forwards}
+@keyframes cardLock{40%{transform:scale(.96) rotateX(14deg)}100%{transform:scale(1.03)}}
+/* poker action bar */
+.stake-bar{grid-column:1/-1;background:#0f3a28;border:2px solid #c99a3b;border-radius:14px;padding:10px;color:#f4e6c0;animation:slideUp .3s ease}
+.stake-bar[hidden]{display:none}
+@keyframes slideUp{from{opacity:0;transform:translateY(10px)}}
+.stake-bar p{margin:0 0 8px!important;font:700 11px var(--sans)!important;letter-spacing:.08em;text-transform:uppercase;color:#f0d9a0!important}
+.stake-bar>div{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stk{border:3px dashed rgba(255,255,255,.75);border-radius:14px;padding:9px 4px;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:0 4px 0 rgba(0,0,0,.45);transition:transform .12s;font-family:var(--sans)}
+.stk:hover:not(:disabled){transform:translateY(-3px)}.stk b{font:800 13px var(--sans)}.stk small{font:600 10px var(--sans);opacity:.9}.stk em{font:700 11px var(--sans);font-style:normal;background:rgba(0,0,0,.28);padding:1px 7px;border-radius:99px}
+.chip-g{background:#2b8a57}.chip-b{background:#2f58b8}.chip-r{background:#c23b32;animation:allGlow 1.4s ease-in-out infinite}
+@keyframes allGlow{50%{box-shadow:0 4px 0 rgba(0,0,0,.45),0 0 14px 3px rgba(255,90,60,.8)}}
+/* chip stacks replace the Trust bar */
+.trust-meter{display:none!important}
+.chips{position:relative;flex:0 0 36px;width:36px;height:60px;margin-left:auto}
+.chips:after{content:"";position:absolute;left:-3px;right:-3px;bottom:31px;border-top:1.5px dashed #d4a84f;opacity:.8}
+.chip{position:absolute;left:3px;bottom:calc(var(--i)*5px);width:30px;height:11px;border-radius:50%;border:1.5px solid rgba(0,0,0,.5);background:repeating-conic-gradient(var(--c) 0 20deg,#fff 20deg 40deg);box-shadow:0 1.5px 0 rgba(0,0,0,.55);animation:chipDrop .35s ease}
+.chip.c0{--c:#c23b32}.chip.c1{--c:#2f58b8}.chip.c2{--c:#2e9a5b}.chip.c3{--c:#2a2a2a}
+@keyframes chipDrop{from{transform:translateY(-24px);opacity:0}}
+.chip.out{animation:chipOut .3s ease forwards}@keyframes chipOut{to{transform:translateY(-16px) scale(.8);opacity:0}}
+.chips.low{animation:chipShake .6s ease infinite;filter:drop-shadow(0 0 6px #e0675f)}
+@keyframes chipShake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+/* hand of power-up cards at the bottom */
+#answerStatus{display:none!important}
+.hand-dock{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:40;display:flex;align-items:flex-end;justify-content:center;padding:0 8px;pointer-events:none;max-width:100vw}
+.hand-dock>*{pointer-events:auto}
+.pcard{width:clamp(54px,9vw,78px);height:clamp(76px,12.5vw,108px);margin:0 -5px;border-radius:9px;border:2px solid #2b1a0e;background:linear-gradient(160deg,#fffef8,#efe5cc);color:#1c2b30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 -2px 10px rgba(0,0,0,.45);transform:translateY(24px) rotate(var(--r,0deg));transform-origin:50% 120%;transition:transform .2s;cursor:pointer;font:700 9px var(--sans);text-align:center;padding:4px}
+.pcard span{font-size:clamp(20px,3.4vw,30px)}.pcard:hover{transform:translateY(-8px) rotate(0)}
+.pcard.armed{background:linear-gradient(160deg,#fff0b3,#ffb703);border-color:#7a4b00;animation:armedGlow 1.6s infinite;transform:translateY(10px)}
+@keyframes armedGlow{50%{box-shadow:0 -2px 16px 3px rgba(255,183,3,.9)}}
+.dock-empty{margin:0 0 8px;padding:5px 14px;border-radius:99px;background:rgba(11,35,43,.9);color:#f0d9a0;font:700 11px var(--sans);border:1px solid #c99a3b}
+/* hop physics, all-in burst */
+.token.step .chr-in{animation:chrStep .1s ease-out}
+@keyframes chrStep{0%{transform:translateY(0)}45%{transform:translateY(-8px) scale(1.05,.95)}100%{transform:translateY(0) scale(.97,1.04)}}
+.allin-burst{position:fixed;inset:0;z-index:100;display:grid;place-items:center;pointer-events:none;background:radial-gradient(circle,rgba(255,70,40,.4),transparent 65%);animation:burstBg 1.3s ease forwards}
+.allin-burst b{font:900 clamp(40px,12vw,120px) Georgia,serif;color:#fff;letter-spacing:.08em;text-shadow:0 0 22px #ff3b2f,0 5px 0 #7a1810;animation:burstText 1.3s ease forwards}
+@keyframes burstBg{0%{opacity:0}15%{opacity:1}100%{opacity:0}}@keyframes burstText{0%{transform:scale(.3) rotate(-8deg);opacity:0}25%{transform:scale(1.15) rotate(2deg);opacity:1}100%{transform:scale(1.4);opacity:0}}
+.shake{animation:shellShake .55s}@keyframes shellShake{20%{transform:translate(-5px,2px)}40%{transform:translate(5px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(3px,-1px)}}
+@media(max-width:560px){.game-shell{border-width:6px;border-radius:16px}.chips{flex-basis:30px;width:30px}.chip{width:26px}}
+.ludo-opt.likert{display:flex;align-items:center;gap:10px}.ludo-opt.likert b{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}.ludo-opt.likert.sel{outline:3px solid var(--brass)}
+.ludo-opt.likert.capped{flex-direction:column;gap:0}
+.ludo-opt.likert small{display:block;font:600 10px var(--sans);opacity:.75;line-height:1.1;margin-top:1px}
+.ludo-opt.likert:disabled{opacity:.4;cursor:not-allowed}
+.tmr{margin-top:8px;font-size:13px;font-weight:600;color:#6a5a38}.tmr i{display:block;height:6px;border-radius:3px;background:linear-gradient(90deg,#ffb703,#e85d04);width:100%;margin-bottom:4px}
+.streak{display:none!important}
+.bite-fx{position:absolute;z-index:20;transform:translate(-50%,-50%);pointer-events:none}
+.bite-snake{font-size:clamp(44px,9vw,100px);animation:lunge .8s ease-out forwards;filter:drop-shadow(0 5px 7px #000a)}
+@keyframes lunge{0%{transform:scale(.2) rotate(-35deg);opacity:0}35%{transform:scale(1.8) rotate(10deg);opacity:1}55%{transform:scale(1.4) rotate(-8deg)}100%{transform:scale(1.55) rotate(0);opacity:.95}}
+.bite-txt{position:absolute;left:50%;top:-35%;font:900 clamp(20px,4.5vw,38px) system-ui;color:#fff;white-space:nowrap;text-shadow:0 0 8px #f22,3px 3px 0 #900;transform:translateX(-50%) rotate(-8deg);animation:biteTxt .5s .25s both}
+@keyframes biteTxt{0%{transform:translateX(-50%) scale(0) rotate(-8deg)}70%{transform:translateX(-50%) scale(1.35) rotate(-8deg)}100%{transform:translateX(-50%) scale(1) rotate(-8deg)}}
+#ludoBoard.flash::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 35%,rgba(225,20,20,.6));z-index:19;pointer-events:none;animation:redFlash 1s}
+@keyframes redFlash{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
+#ludoBoard.shakeb{animation:shellShake .5s 2}
+.token.bitten .chr-in{animation:bitSq .5s ease both!important;filter:hue-rotate(-40deg) saturate(2.2)}
+@keyframes bitSq{0%{transform:scale(1)}30%{transform:scale(1.3,.65)}55%{transform:scale(.7,1.35) rotate(-14deg)}100%{transform:scale(.85) rotate(10deg)}}
+.token.sliding{transition:left .9s cubic-bezier(.55,0,.85,1),top .9s cubic-bezier(.55,0,.85,1)!important}
+.token.sliding .chr-in{animation:spinSlide .9s linear!important}@keyframes spinSlide{to{transform:rotate(720deg) scale(.75)}}
+.token.dizzy::after{display:block!important;content:"💫"!important;position:absolute;top:-34%;left:50%;font-size:26px;animation:dizzySpin 1s linear infinite}
+@keyframes dizzySpin{from{transform:translateX(-50%) rotate(0)}to{transform:translateX(-50%) rotate(360deg)}}
+.token.climbing{transition:left .9s ease-in-out,top .9s ease-in-out!important;filter:drop-shadow(0 0 12px #ffd24a) drop-shadow(0 0 4px #fff)}
+.dice-ov{position:fixed;inset:0;z-index:9999;background:rgba(6,14,18,.62);display:flex;align-items:center;justify-content:center;transition:opacity .25s;animation:ovIn .2s}@keyframes ovIn{from{opacity:0}}
+.dice-stage{text-align:center;perspective:800px}.toss{animation:toss 1.35s ease-out both}
+@keyframes toss{0%{transform:translateY(160px) scale(.5)}30%{transform:translateY(-110px) scale(1.2)}55%{transform:translateY(0) scale(1)}70%{transform:translateY(-38px)}85%{transform:translateY(0)}92%{transform:translateY(-10px)}100%{transform:translateY(0)}}
+.cube{width:140px;height:140px;position:relative;margin:0 auto;transform-style:preserve-3d;transition:transform 1.3s cubic-bezier(.12,.7,.2,1)}
+.dface{position:absolute;inset:0;background:linear-gradient(145deg,#fffdf4,#ddd5bd);border:2px solid #c9bfa0;border-radius:18px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:22px;gap:9px;box-shadow:inset 0 -4px 8px rgba(0,0,0,.15)}
+.dface i{border-radius:50%}.dface i.on{background:radial-gradient(circle at 35% 30%,#555,#000)}
+.dice-label{margin-top:44px;color:#fff;font:800 28px system-ui;text-shadow:0 2px 8px #000}.dice-label.pop{animation:biteTxt2 .45s both;color:#ffd24a;font-size:36px}
+@keyframes biteTxt2{0%{transform:scale(.3)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes idleDie{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.toss.idle{animation:idleDie 1.4s ease-in-out infinite}.toss.idle .cube{cursor:pointer}
+.dsh{width:120px;height:20px;margin:26px auto 0;border-radius:50%;background:rgba(0,0,0,.5);filter:blur(5px)}
+.dsh.go{animation:dshad 1.35s ease-out both}
+@keyframes dshad{0%{transform:scale(1.2);opacity:.2}30%{transform:scale(.45);opacity:.2}55%{transform:scale(1.05);opacity:.55}70%{transform:scale(.75)}85%{transform:scale(1.05)}100%{transform:scale(1)}}
+.dice-label{margin-top:18px!important;min-height:44px}
+.dbtn{margin-top:12px;font:900 22px system-ui;padding:12px 30px;border:0;border-radius:14px;background:#ffc857;color:#201800;cursor:pointer;box-shadow:0 5px 0 #a8791c;animation:btnPulse 1s ease-in-out infinite}
+@keyframes btnPulse{50%{transform:scale(1.07)}}
+#themeOv{position:absolute;inset:0;z-index:4;pointer-events:none;transition:background 2.5s,opacity 2.5s;border-radius:inherit}
+#themeOv.th0{background:transparent}
+#themeOv.th1{background:linear-gradient(180deg,rgba(255,140,60,.30),rgba(255,70,40,.18));mix-blend-mode:multiply}
+#themeOv.th2{background:radial-gradient(circle at 20% 15%,rgba(255,255,255,.55) 0 1.5px,transparent 2px),radial-gradient(circle at 70% 25%,rgba(255,255,255,.5) 0 1.5px,transparent 2px),radial-gradient(circle at 45% 60%,rgba(255,255,255,.4) 0 1.5px,transparent 2px),rgba(10,20,90,.35);mix-blend-mode:multiply}
+#themeOv.th3{background:radial-gradient(circle at 50% 40%,rgba(255,215,90,.35),rgba(255,170,30,.22));mix-blend-mode:soft-light}
+.ludo-board-shell.slowmo{animation:slowZoom 1.4s ease-in-out}@keyframes slowZoom{0%,100%{transform:scale(1)}40%,60%{transform:scale(1.07)}}
+.tense{position:fixed;top:78px;left:50%;transform:translateX(-50%);z-index:9998;background:#7a1f1a;color:#fff;font:800 18px system-ui;padding:10px 20px;border-radius:30px;box-shadow:0 0 24px #f55;animation:tensePulse .6s ease-in-out infinite alternate;max-width:92vw;text-align:center}
+@keyframes tensePulse{to{transform:translateX(-50%) scale(1.06)}}
+.rules h3{margin:1em 0 .3em}.rules ul{margin:.2em 0 .6em 1.2em;padding:0}.rules li{margin:.3em 0}.rules .hl{background:rgba(201,154,59,.2);border-left:4px solid #c99a3b;padding:10px 14px;border-radius:8px;margin:8px 0}.rules summary{cursor:pointer;margin:10px 0}
+
+/* ===== UX PATCH v2 (presentation only: no game-loop, survey, snake/ladder or scoring logic touched) ===== */
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#snd,#calm{margin:0;padding:6px 12px;min-height:40px;font-size:13px;background:transparent;border:1px solid rgba(255,255,255,.45)}
+#calm{display:inline-flex;align-items:center}
+.hand-dock{padding-bottom:env(safe-area-inset-bottom)}
+.ludo-board{width:min(100%,calc(100dvh - 160px))}
+.ludo-side{max-height:calc(100dvh - 24px)}
+@media(max-width:900px){.ludo-board{width:100%}.ludo-side{max-height:none}.hud-toast{position:fixed;top:84px;z-index:10001}}
+
+/* turn transitions + question focus */
+.challenge-card:focus{outline:none}
+.challenge-card.swap{animation:cardSwap .35s ease-out}
+@keyframes cardSwap{from{opacity:0;transform:translateY(8px)}}
+@media(min-width:901px){.challenge-card{min-height:240px}}
+.token:not(.turn){opacity:.82}
+.token.turn .chr{filter:drop-shadow(0 0 6px #ffd27a) drop-shadow(0 2px 1.5px rgba(0,0,0,.4))}
+@media(hover:none){.ludo-side[data-phase=question] .submit-row:after{display:none}}
+
+/* 1-7 rating row (buttons stay flat children of #ludoOptions) */
+#ludoOptions.scale7{display:flex;flex-wrap:wrap;gap:6px}
+.professional-side #ludoOptions.scale7{border:0;overflow:visible}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert{flex:1 1 0;min-width:0;min-height:48px;padding:0;justify-content:center;border:1px solid #94633a;border-radius:10px;background:#fff8e6}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert b{position:static;transform:none;background:none;color:inherit;width:auto;height:auto;font:700 17px var(--sans)}
+.professional-side #ludoOptions.scale7 .ludo-opt.likert.sel{background:#1c2b30;color:#fff}
+#ludoOptions.scale7 .tmr{flex-basis:100%}
+#ludoOptions.scale7::after{content:"1 = Strongly disagree  \00b7  7 = Strongly agree";flex-basis:100%;order:9;text-align:center;font:600 11px var(--sans);color:#6a5a38}
+#ludoOptions .tmr i{display:none}
+
+/* special tiles */
+.ludo-cell.land{animation:landPulse .7s ease-out}
+@keyframes landPulse{0%{filter:brightness(1.7);transform:scale(1.12);z-index:3}100%{filter:none;transform:none}}
+.pcard.new{animation:cardIn .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes cardIn{from{transform:translateY(-60vh) scale(.4) rotate(-20deg);opacity:0}}
+.cdbar{height:6px;border-radius:3px;background:#d8cfb8;overflow:hidden;margin-top:10px}
+.cdbar i{display:block;height:100%;background:linear-gradient(90deg,#d4a84f,#e0675f);animation:cdrain 10s linear forwards}
+@keyframes cdrain{from{width:100%}to{width:0}}
+.progress-mini{position:relative}
+.progress-mini::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 calc(25% - 2px),#0b232b calc(25% - 2px) 25%)}
+
+/* phones */
+@media(max-width:620px){.top{gap:10px}#snd,#calm{padding:4px 8px;font-size:11px;min-height:34px}}
+@media(max-width:560px){
+  .pcard{width:clamp(64px,16vw,78px);height:clamp(88px,22vw,108px)}
+  .pcard,.pcard small,.game-status small,.board-legend{font-size:11px}
+  .board-legend{opacity:1}
+  .token{width:28px!important;height:34px!important}
+  .tk-name{display:none}
+  .ludo-svg .lbl{display:none}
+  .ludo-board-shell{padding:8px!important}
+}
+
+/* calm mode: removes flashes, shakes, slow-mo zoom and big pop-ups */
+body.calm #ludoBoard.flash::after,body.calm .bite-fx,body.calm .allin-burst{display:none!important}
+body.calm #ludoBoard.shakeb,body.calm .shake,body.calm .ludo-board-shell.slowmo,body.calm .snake-active .sn[data-snake],body.calm .confetti,body.calm .cf{animation:none!important}
+
+/* ===== ONBOARDING (intro -> details -> game). Presentation only. ===== */
+.ob-steps{list-style:none;display:flex;justify-content:center;gap:10px;margin:0 auto 16px;padding:0;flex-wrap:wrap}
+.ob-steps li{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:99px;background:rgba(255,255,255,.1);color:#b9c9cc;font:600 13px var(--sans)}
+.ob-steps li b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:12px}
+.ob-steps li.on{background:#d4a84f;color:#1a1200}.ob-steps li.on b{background:#1a1200;color:#fff}
+.ob-steps li.done{background:#2e9a6a;color:#fff}.ob-steps li.done b{font-size:0}.ob-steps li.done b::before{content:"\2713";font-size:13px}
+@media(max-width:480px){.ob-steps li:not(.on) span{display:none}.ob-steps li:not(.on){padding-right:8px}}
+.ob-hero,.ob-how,.ob-card{max-width:980px;margin-left:auto;margin-right:auto}
+.ob-card{max-width:760px}
+.ob-hero h1{max-width:16em}
+.ob-meta{position:relative;margin:14px 0 0;font-size:14px;color:#cfe3e0}
+.ob-cta{margin-top:22px;padding:14px 30px;font-size:17px;background:#d4a84f;color:#1a1200;position:relative}
+.ob-cta:hover{background:#e0bd72}
+.ob-how h2{margin-bottom:4px}
+.ob-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 18px}
+.ob-grid .wide{grid-column:1/-1}
+@media(max-width:560px){.ob-grid{grid-template-columns:1fr}}
+.ob-card input[type=text],.ob-card input[type=email],.ob-card input[type=number],.ob-card select{width:100%;padding:12px;border:1.5px solid #9fb0b3;border-radius:8px;font:inherit;font-size:16px;color:#1c2b30;background:#fff;min-height:46px}
+.ob-card select{appearance:auto}
+.ob-card [aria-invalid=true]{border-color:#b23b3b!important}
+.fe{color:#b23b3b;font-size:13px;font-weight:600;margin:4px 0 0}.fe:empty{display:none}
+.ob-check{display:flex;gap:10px;align-items:flex-start;font-weight:400!important;margin-top:16px!important;line-height:1.45}
+.ob-check input{margin-top:3px;width:20px;height:20px;flex:none}
+.ob-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center}
+.ob-actions button{margin:0}
+.ob-actions .ob-go{flex:1 1 220px;padding:14px 22px;font-size:16px}
+
+/* ===== PHONE/TABLET LAYOUT FIX: the later HUD rule forced two columns at every width, squeezing the question panel ===== */
+@media(max-width:900px){
+ .game-shell{grid-template-columns:minmax(0,1fr)!important;gap:14px;padding:10px;border-width:6px;border-radius:16px}
+ .board-column{order:2;min-width:0}
+ .ludo-side{order:1;position:static!important;max-height:none!important;overflow:visible!important;width:100%;min-width:0}
+ .board-heading{margin-bottom:6px}.board-heading h1{font-size:24px}
+ .game-status{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:560px){
+ main{padding:10px 8px 24px}
+ .players-panel{grid-template-columns:1fr 1fr;padding:8px}
+ .professional-side .player-card{padding:6px 8px;gap:6px}
+ .avatar{flex:0 0 28px;height:28px}
+ .player-info strong{font-size:13px}.player-info span{font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:9ch}
+ .chips{flex-basis:24px;width:24px}.chip{width:20px}
+ .challenge-card{padding:14px}
+ .coach{font-size:12.5px}
+ .game-status>div{min-height:44px}
+ .board-legend{gap:6px 12px}
+ .dice-tray{width:min(86%,300px)}
+}
+
+/* ===== LAPTOP FIT PATCH v6 (game screen only; v4 look kept) ===== */
+/* 1. slimmer header */
+.top{height:56px!important;padding:0 22px!important;gap:16px!important}
+.brand{min-width:0!important;gap:12px!important}
+.brand-cfo{font-size:27px!important}.brand-cfo .crown{top:-9px!important;font-size:14px!important}
+.brand-divider{height:34px!important}
+.brand-title strong{font-size:20px!important}
+.brand-title div{margin-top:5px!important;font-size:9px!important}
+.header-center{display:none!important}
+#snd,#calm{min-height:32px!important;padding:4px 10px!important}
+/* 2. no title row above the board */
+.board-heading{display:none!important}
+main{padding:8px 14px 8px!important}
+.game-shell{padding:10px!important;border-width:6px!important;outline:0!important;gap:14px!important}
+/* 3. thinner wooden board frame */
+.ludo-board-shell{padding:8px!important;border-bottom-width:5px!important}
+.ludo-board-shell:before,.ludo-board-shell:after,.board-title{display:none!important}
+/* 6. trimmed side panel */
+.coach{padding:7px 11px!important;font-size:12px!important}
+.coach button{margin-top:5px!important;padding:5px 12px!important}
+.challenge-card{min-height:0!important;padding:12px 16px!important}
+.challenge-head{padding-bottom:8px!important;margin-bottom:8px!important}
+.challenge-card h2{font-size:18px!important;margin-bottom:4px!important}
+.challenge-card p{font-size:14px!important;line-height:1.45!important}
+.challenge-rule{margin:8px 0!important}
+.players-panel{padding:7px!important}
+.game-status>div{min-height:42px!important}
+.side-footer{display:flex;flex-wrap:wrap;align-items:center;gap:3px 10px;padding:8px 12px!important}
+.side-footer .progress-mini{flex:1;min-width:80px;margin:0!important}
+.side-footer #moveLog{flex-basis:100%;margin-top:2px!important}
+.board-legend{padding:5px 9px!important;gap:4px 12px!important;font-size:10.5px!important}
+.board-legend .lg{font-size:11px!important}.board-legend .lg i{width:16px!important;height:16px!important;font-size:10px!important}
+/* 4. dice tray now lives in the side panel */
+.ludo-side .dice-tray{order:3;width:100%;margin:0;padding:6px 12px;border:2px solid #6a3f1c;border-radius:10px;gap:12px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45)}
+.ludo-side .die{width:38px}
+.ludo-side .die-cap{max-width:none;font-size:12px}
+.ludo-side .game-status{order:4}.ludo-side .side-footer{order:5}.ludo-side .board-legend{order:6}
+@media(min-width:901px){
+ /* 7. board sized to window height */
+ .board-column{display:flex;justify-content:center;align-items:flex-start}
+ .ludo-board-shell{width:min(100%,calc(100dvh - 118px))!important}
+ .ludo-board{width:100%!important;max-height:none!important}
+ .ludo-side{max-height:calc(100dvh - 82px)!important;top:8px!important;gap:8px!important}
+ /* 5. smaller hand of cards, tucked bottom-right, no reserved page space */
+ body.has-dock{padding-bottom:0!important}
+ .hand-dock{left:auto!important;right:18px;transform:none!important;justify-content:flex-end}
+ .pcard{width:52px!important;height:68px!important;margin:0 -4px!important;transform:translateY(28px) rotate(var(--r,0deg))}
+ .pcard span{font-size:20px!important}.pcard small{font-size:8px!important}
+ .pcard:hover{transform:translateY(-6px) rotate(0)!important}
+ .pcard.armed{transform:translateY(14px)!important}
+ .dock-empty{display:none}
+ body:has(.hand-dock .pcard) .ludo-side{padding-bottom:42px}
+}
+
+/* v6 fixes */
+.ludo-side .dice-tray{align-items:center!important;justify-content:flex-start!important;flex:none}
+.ludo-side .die{width:36px!important;height:36px!important;flex:none!important;aspect-ratio:auto!important;padding:5px!important}
+body:has(.game-shell) footer{padding:5px 10px!important;font-size:11px!important}
+@media(min-width:901px){
+ .ludo-board-shell{width:min(100%,calc(100dvh - 146px))!important}
+ .ludo-side{max-height:calc(100dvh - 146px)!important;overflow-y:auto}
+}
+
+/* v6 fix 3: nothing overlaps; laptop-height trims */
+.ludo-side>*{flex-shrink:0}
+@media(min-width:901px){.coach{display:none!important}}
+@media(min-width:901px) and (max-height:800px){.board-legend{display:none!important}}
+
+/* v6 fix 4: short laptop screens (window under ~720px tall) */
+@media(min-width:901px) and (max-height:720px){
+ .submit-row,.tmr{display:none!important}
+ .player-info span{display:none!important}
+ .players-panel{padding:5px!important}.professional-side .player-card{padding:5px 9px!important}
+ .challenge-icon{display:none!important}.challenge-head{padding-bottom:5px!important;margin-bottom:6px!important}
+ .challenge-card{padding:10px 14px!important}
+ .challenge-card h2{font-size:17px!important}.challenge-card p{font-size:13.5px!important}
+ .challenge-rule{margin:6px 0!important}
+ .professional-side #ludoOptions.scale7 .ludo-opt.likert{min-height:42px!important}
+ .ludo-side{gap:6px!important}
+ .game-status>div{min-height:34px!important;padding:4px!important}
+ .ludo-side .dice-tray{padding:4px 12px!important}
+ .side-footer{padding:6px 10px!important}
+}
+
+/* ===== v7: bigger board ===== */
+@media(min-width:901px){
+ main{padding:5px 10px 5px!important}
+ .game-shell{padding:4px!important;border-width:0!important;border-radius:12px!important;gap:12px!important;grid-template-columns:minmax(0,1fr) clamp(340px,30vw,420px)!important}
+ .ludo-board-shell{padding:5px!important;border-bottom-width:4px!important;width:min(100%,calc(100dvh - 82px))!important}
+ .ludo-side{max-height:calc(100dvh - 76px)!important;top:0!important}
+ body:has(.game-shell) footer{position:fixed;right:10px;bottom:2px;padding:2px 8px!important;font-size:10px!important;background:rgba(7,29,38,.78);border-radius:6px;z-index:30;opacity:.8}
+}
+</style></head><body>
+<header class="top">
+  <div class="brand">
+    <div class="brand-cfo"><span class="crown">♛</span><span>CFO</span></div>
+    <div class="brand-divider"></div>
+    <div class="brand-title"><strong>Leadership Journey</strong><div>STRATEGY <i>·</i> PEOPLE <i>·</i> FINANCE <i>·</i> IMPACT</div></div>
+  </div>
+  <div class="header-center">Every decision moves you closer<br>to the top.</div>
+  <div class="hdr-r"><span id="stage"></span><span class="welcome-user"><span class="user-icon">●</span><span id="welcomeName">Welcome, Executive</span></span><button id="snd" type="button">Sound on</button><button id="calm" type="button" aria-pressed="false">Calm mode: off</button></div>
+</header><div class="stepbar" id="steps"></div>
+<main id="app"></main>
+<footer>Responses are recorded for research purposes. <a href="#admin" id="adm">Researcher view</a> · <a href="#" id="lnk">Link Excel auto-save</a><span id="lst"></span></footer>
+<script>
+/* ===== SETTINGS ===== */
+const SHEET_URL="https://script.google.com/macros/s/AKfycbwv1_kx5In1KN1k4bzXuUJ1tAN5YG7K5Kgv5h3INy8Ju8-DLiWcG97YAeX-UdsXSHZJFw/exec";      // paste your Google Apps Script web-app URL here to collect every respondent in one Google Sheet
+
+/* ===== DATA ===== */
+const LV=[["IQ & Analytical Rigor","Analytical Rigor"],["EQ & People Leadership","People Leadership"],["Decision-Making & Strategy","Strategic Finance"],["Ethics & Integrity","Integrity & Ethics"]];
+const ARCH={
+guardian:["The Guardian","Integrity focus","Automatically removes one wrong answer block in every Ethics question.","Cost: your ball travels 25% faster, so it is harder to aim.","#1f6f78"],
+forecaster:["The Forecaster","Analytical focus","Starts each level with an Oracle Pop that removes one wrong answer block.","Cost: 0.8x board points.","#2f5f95"],
+people:["The People Leader","People focus","Regains +5% focus after clearing a level on the first attempt.","Cost: shorter aim guide.","#6f4d9c"],
+dealmaker:["The Dealmaker","Strategy focus","Earns 1.5x board points for every correct answer.","Cost: wrong answers cost 15%, not 10%.","#a9822f"]};
+const PN={P:"Precision Aim",B:"Bomb Bubble",F:"Freeze Frame",O:"Oracle Pop"};
+// Likert items: [short heading, statement]. Rated 1-7 (all items positively worded: higher = stronger trait)
+const LIKERT=["Strongly disagree","Disagree","Somewhat disagree","Neutral","Somewhat agree","Agree","Strongly agree"];
+const REACT=["The board frowns.","The board looks doubtful.","A few raised eyebrows.","The board waits to hear more.","A few nods around the table.","The board is impressed.","Standing ovation from the board!"];
+const LEVEL_BLURB=["Numbers don't lie, but they can mislead. Show how carefully you think.","A CFO leads people, not just spreadsheets. Show how you handle teammates.","Tough calls under pressure. Show how you decide and take ownership.","Final test: what you do when no one is watching. Show your integrity."];
+const HERO=["🧮","🤝","♟️","🛡️"];
+const NPC=[{i:"🧑‍🏫",n:"Prof. Rao",role:"Chief Analyst",r:["Hmm. Check your numbers again.","Reasonable, but dig deeper.","Sharp thinking. I'd hire you."]},
+{i:"👩‍💼",n:"Meera",role:"Head of People",r:["Your team may need more from you.","You're getting there. Keep listening.","People would follow you."]},
+{i:"🧔",n:"Vikram",role:"Lead Investor",r:["I'd hesitate to back that.","Decent, but I want more conviction.","Now that's a decision-maker."]},
+{i:"🕵️",n:"Anita",role:"Chief Auditor",r:["That gives me concern.","Acceptable, but I'll be watching.","Spotless. Integrity noted."]}];
+const ARCHE=[["The Analyst","You think in evidence. Numbers, assumptions and risk are your home ground."],["The People Leader","You read people well and keep teams steady under pressure."],["The Strategist","You make firm, long-term decisions and own the results."],["The Guardian","Your integrity is your strongest asset. People can trust your word."]];
+const Q=[[
+["Recheck under pressure","Even when a deadline is close, I recheck my calculations instead of submitting quickly."],
+["Weak data, popular view","When a popular opinion is backed by weak data, I say so, even if the whole class disagrees."],
+["Risk and return","I judge an investment or purchase by its risk and long-term return, not just its first-year benefit."],
+["Own assumptions first","I question my own assumptions before I question other people's."],
+["Conflicting numbers","When two sources give conflicting numbers, I trace both back to their origin before I trust either."]],[
+["Honest feedback","I can give a close friend honest, negative feedback without damaging the friendship."],
+["Credit taken","When a teammate takes credit for my work, I address it calmly instead of staying silent or reacting angrily."],
+["Steady tone","When I am the most stressed person in the room, I still manage my tone so the team stays steady."],
+["Working with a rival","I can work well with someone I personally dislike if the team needs it."],
+["Removing a weak performer","When I must remove a weak performer from a team, I do it respectfully and explain my reasons."]],[
+["Long-term plan","I would turn down an exciting opportunity if it conflicted with my long-term plan."],
+["Owning a failure","I take responsibility for a group decision that failed, even if it was not entirely my idea."],
+["Unpopular decision","When I lead, I am willing to make an unpopular decision if it is right for the team's goal."],
+["Letting go","I abandon a project I have worked on for months once I see it will not succeed."],
+["Fair distribution","When resources are limited, I fairly distribute them by priority instead of by who asks the loudest."]],[
+["Bending the truth","I would not bend the truth to win a competition or secure an internship, even if others do."],
+["Adjusting figures","If a respected senior asked me to adjust figures in a club report, I would refuse and escalate."],
+["A friend's dishonesty","I would report a friend's serious dishonesty, even if it ended our friendship."],
+["Unearned credit","I would return unearned credit or reward even when no one would ever find out."],
+["Honesty has a cost","I stay honest in a situation where honesty will clearly cost me something."]]];
+
+/* ===== HELPERS ===== */
+const $=(s,e=document)=>e.querySelector(s),app=$('#app'),stg=$('#stage');
+const rnd=n=>Math.floor(Math.random()*n),pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
+const mean=a=>a.length?+(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let R={},G,S;
+const STEPS=['Register','Survey game','Questions','Snakes & Ladders','Report'];
+function steps(s){const r=/Researcher/.test(s),i=/Registration/.test(s)?0:/Snakes & Ladders/.test(s)?1:/Question/.test(s)?2:/Final/.test(s)?4:1;$('#steps').innerHTML=r?'':STEPS.map((n,k)=>`<span class="st ${k<i?'done':k==i?'on':''}">${k+1}. ${n}</span>`).join('')}
+const HITS_MODE=0; // 0 = each block needs one hit per word written on it; set to a number (e.g. 3) to make every block need that many hits
+function critter(){return `<svg viewBox="0 0 100 100" width="100" height="100" overflow="visible" aria-hidden="true"><defs><linearGradient id="cgb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a9aa5"/><stop offset="1" stop-color="#1a5a63"/></linearGradient><linearGradient id="cgh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4bbcc6"/><stop offset="1" stop-color="#2a9aa5"/></linearGradient></defs>
+<ellipse cx="50" cy="95" rx="28" ry="5" fill="rgba(0,0,0,.35)"/><g class="body"><ellipse cx="38" cy="90" rx="9" ry="5" fill="#0f3a41"/><ellipse cx="62" cy="90" rx="9" ry="5" fill="#0f3a41"/>
+<ellipse cx="50" cy="68" rx="27" ry="24" fill="url(#cgb)"/><ellipse cx="50" cy="74" rx="15" ry="13" fill="#cfeae6"/><polygon points="44,60 50,64 56,60 56,68 50,64 44,68" fill="#a9822f"/>
+<line x1="50" y1="20" x2="50" y2="8" stroke="#0f3a41" stroke-width="3"/><circle cx="50" cy="7" r="4.5" fill="#a9822f"/><circle cx="50" cy="40" r="22" fill="url(#cgh)"/>
+<circle cx="41" cy="38" r="7" fill="#fff"/><circle cx="59" cy="38" r="7" fill="#fff"/><circle cx="42" cy="39" r="3.5" fill="#12303a"/><circle cx="58" cy="39" r="3.5" fill="#12303a"/>
+<path d="M43 49 Q50 55 57 49" fill="none" stroke="#12303a" stroke-width="2.5" stroke-linecap="round"/></g>
+<g class="gun"><rect x="44" y="53" width="12" height="14" rx="3" fill="#2b3a40"/><rect x="50" y="55" width="38" height="8" rx="3" fill="#3a4a51"/><rect x="86" y="52" width="6" height="14" rx="2" fill="#a9822f"/><circle cx="50" cy="59" r="6.5" fill="#1a5a63" stroke="#0f3a41" stroke-width="1.5"/><polygon class="flash" points="92,59 106,51 101,59 106,67" fill="#ffd54a"/></g></svg>`}
+function setGun(el,a){el.querySelector('.gun').style.transform='rotate('+(a*180/Math.PI)+'deg)'}
+function fireFx(el){const f=el.querySelector('.flash');f.classList.add('on');el.classList.remove('recoil');void el.offsetWidth;el.classList.add('recoil');setTimeout(()=>f.classList.remove('on'),100)}
+let MUTE=false,AC;
+function sfx(t){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const m={pop:[660,.08],miss:[170,.15],good:[880,.2],bad:[220,.28],shoot:[430,.07]}[t],o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=m[0];g.gain.value=.06;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+m[1]);o.stop(AC.currentTime+m[1])}catch(e){}}
+function sfx2(n){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();
+ const q={...Object.fromEntries([1,2,3,4,5,6,7].map(n=>['r'+n,[[260+n*85,.14,0,'triangle',.06],[520+n*170,.08,.05,'sine',.025]]])),level:[[523,.14,0],[659,.14,.13],[784,.14,.26],[1047,.34,.39]],streak:[[880,.08,0],[1100,.08,.08],[1320,.18,.16]],hero:[[392,.12,0,'square',.03],[587,.12,.1,'square',.03],[784,.25,.2,'triangle',.06]],step:[[420,.04,0,'triangle',.03]],hb:[[62,.13,0,'sine',.2],[54,.16,.2,'sine',.16]],chomp:[[110,.22,0,'square',.12],[70,.3,.05,'sawtooth',.1],[200,.08,0,'square',.08]],slide:[[900,.09,0,'sine',.07],[760,.09,.08,'sine',.07],[620,.09,.16,'sine',.07],[480,.09,.24,'sine',.07],[340,.12,.32,'sine',.07],[220,.25,.42,'sawtooth',.05]],climb:[[392,.09,0,'triangle',.07],[494,.09,.09,'triangle',.07],[587,.09,.18,'triangle',.07],[784,.09,.27,'triangle',.07],[988,.2,.36,'triangle',.08]],chip:[[1400,.05,0,'square',.03],[1000,.05,.04,'square',.03]],card:[[300,.06,0,'sawtooth',.03],[520,.05,.04,'triangle',.04]],raise:[[520,.1,0],[780,.14,.09]],allin:[[220,.55,0,'sawtooth',.05],[330,.55,0,'sawtooth',.04],[440,.55,0,'sawtooth',.04],[880,.6,.18,'triangle',.06],[1320,.6,.3,'triangle',.05]],win:[[660,.12,0],[880,.12,.1],[1100,.2,.2]],lose:[[330,.2,0],[220,.3,.16]],gem:[[1200,.1,0],[1600,.12,.06],[2000,.14,.12]],coin:[[1300,.07,0],[1800,.14,.07]]}[n]||[];
+ q.forEach(([f,d,t,ty,v])=>{const o=AC.createOscillator(),g=AC.createGain(),T=AC.currentTime+t;o.type=ty||'triangle';o.frequency.setValueAtTime(f,T);if(n==='allin')o.frequency.exponentialRampToValueAtTime(f*2,T+d);g.gain.setValueAtTime(v||.05,T);g.gain.exponentialRampToValueAtTime(.0001,T+d);o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+d)})}catch(e){}}
+$('#snd').onclick=()=>{MUTE=!MUTE;$('#snd').textContent=MUTE?'Sound off':'Sound on'};
+(function(){const b=$('#calm'),mq=matchMedia('(prefers-reduced-motion:reduce)'),set=on=>{document.body.classList.toggle('calm',on);b.setAttribute('aria-pressed',on);b.textContent='Calm mode: '+(on?'on':'off')};set(mq.matches);b.onclick=()=>set(!document.body.classList.contains('calm'))})();
+function view(h,s){app.innerHTML=h;stg.textContent=s||'';steps(s||'');const wn=$('#welcomeName');if(wn)wn.textContent='Welcome, '+(R.name||'Executive');unmodal();window.scrollTo(0,0)}
+function modal(h){let m=$('#md');if(!m){m=document.createElement('div');m.id='md';document.body.appendChild(m)}m.innerHTML='<div class="mbox">'+h+'</div>';m.style.display='flex'}
+function unmodal(){const m=$('#md');if(m)m.style.display='none'}
+const load=()=>{try{return JSON.parse(localStorage.getItem('cfo_results')||'[]')}catch(e){return[]}};
+function saveFb(id,v,cm){const d=load(),x=[...d].reverse().find(z=>z.row.RespondentID===id);if(x){x.row.Survey_NPS=v;x.row.Survey_Comment=cm;try{localStorage.setItem('cfo_results',JSON.stringify(d))}catch(e){}}
+ if(SHEET_URL)fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({feedback:{RespondentID:id,Survey_NPS:v,Survey_Comment:cm}})}).catch(()=>{})}
+function confetti(box){if(!box){const t=document.createElement('div');t.style.cssText='position:fixed;inset:0;z-index:10000;pointer-events:none;overflow:hidden';document.body.appendChild(t);setTimeout(()=>t.remove(),4200);box=t}const cols=['#a9822f','#1f6f78','#d1495b','#3b6ea5','#8a63b8','#5f9e4a'];for(let i=0;i<46;i++){const p=document.createElement('i');p.className='cf';p.style.cssText='left:'+rnd(100)+'%;background:'+pick(cols)+';animation-delay:'+(Math.random()*1.2).toFixed(2)+'s;animation-duration:'+(2+Math.random()*1.5).toFixed(2)+'s';box.appendChild(p)}}
+function save(rec){const d=load();d.push(rec);try{localStorage.setItem('cfo_results',JSON.stringify(d))}catch(e){}
+ sendSheet(rec)}
+function sendSheet(rec){if(!SHEET_URL)return;fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(rec)}).catch(()=>{try{const q=JSON.parse(localStorage.getItem('cfo_pending')||'[]');q.push(rec);localStorage.setItem('cfo_pending',JSON.stringify(q))}catch(e){}})}
+function flushPending(){if(!SHEET_URL)return;try{const q=JSON.parse(localStorage.getItem('cfo_pending')||'[]');if(!q.length)return;localStorage.setItem('cfo_pending','[]');q.forEach(sendSheet)}catch(e){}}
+addEventListener('online',flushPending);setTimeout(flushPending,2000);
+
+/* ===== AUTO EXCEL RECORDING ===== */
+let XH=null; // linked Excel file (Chrome / Edge)
+const xlStatus=t=>{const e=document.getElementById('lst');if(e)e.textContent=t};
+async function linkExcel(){
+ if(!window.showSaveFilePicker){alert('This browser cannot link a file. Use Chrome or Edge. Until then, each respondent\'s Excel file will download automatically at the end of the game.');return}
+ try{XH=await showSaveFilePicker({suggestedName:'cfo_survey_results.xlsx',types:[{description:'Excel workbook',accept:{'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':['.xlsx']}}]});xlStatus(' ✔ Auto-saving to '+XH.name)}catch(e){}}
+async function writeLinked(rec){
+ const f=await XH.getFile();let rows=[],ans=[];
+ if(f.size){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});rows=wb.Sheets.Respondents?XLSX.utils.sheet_to_json(wb.Sheets.Respondents):[];ans=wb.Sheets.Answers?XLSX.utils.sheet_to_json(wb.Sheets.Answers):[]}
+ rows.push(rec.row);ans.push(...rec.answers);
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Respondents');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(ans),'Answers');
+ const w=await XH.createWritable();await w.write(XLSX.write(wb,{bookType:'xlsx',type:'array'}));await w.close();return rows.length}
+async function autoExcel(rec){
+ let m;
+ try{if(typeof XLSX==='undefined')throw 0;
+  if(XH){const n=await writeLinked(rec);m='✔ Your results were added to the Excel file automatically (respondent #'+n+').'}
+  else{xl([rec],'cfo_'+(rec.row.Name||'respondent').replace(/\W+/g,'_')+'_'+rec.row.RespondentID+'.xlsx');m='✔ Your results were saved automatically as an Excel file in your Downloads folder.'}
+ }catch(e){m='⚠ Automatic Excel save failed. Use "Download my results (Excel)" on the next screen.'}
+ const p=document.createElement('p');p.className=m[0]==='✔'?'good':'bad';p.textContent=m;app.appendChild(p)}
+
+/* ===== ONBOARDING: 1 Intro -> 2 Your details -> 3 Game board ===== */
+const OB_STEPS=['Welcome','Your details','Play'];
+const obSteps=n=>`<ol class="ob-steps" aria-label="Progress"><li class="${n>1?'done':'on'}" ${n===1?'aria-current="step"':''}><b>1</b><span>${OB_STEPS[0]}</span></li><li class="${n>2?'done':n===2?'on':''}" ${n===2?'aria-current="step"':''}><b>2</b><span>${OB_STEPS[1]}</span></li><li class="${n===3?'on':''}"><b>3</b><span>${OB_STEPS[2]}</span></li></ol>`;
+const ageGroup=a=>a<18?'Under 18':a<=24?'18–24':a<=34?'25–34':a<=44?'35–44':'45 and above';
+
+/* Interface 1: intro */
+function home(){R={t0:Date.now()};obIntro()}
+function obIntro(){
+view(`${obSteps(1)}
+<section class="hero ob-hero"><i style="width:120px;height:120px;right:-30px;top:-30px;background:#d1495b"></i><i style="width:70px;height:70px;right:120px;bottom:-20px;background:#a9822f;animation-delay:-2s"></i><i style="width:46px;height:46px;right:60px;top:96px;background:#8a63b8;animation-delay:-4s"></i>
+<span class="kick">Executive assessment</span><h1>Climb the ladder. Earn the corner office.</h1>
+<p class="lead">Race a rival to become CFO in a board game of snakes and ladders. Every turn you rate a statement about how you analyse, lead, decide and act with integrity. Your honest answers build your leadership profile and feed a research survey.</p>
+<div class="feats"><div><b>20 statements</b>4 levels, 5 each</div><div><b>About 10 min</b>Play at your own pace</div><div><b>No wrong answers</b>Your ratings add a move bonus</div></div>
+<button type="button" class="ob-cta" id="obGo">Let’s begin →</button></section>
+<section class="card ob-how"><h2>How it works</h2>
+<div class="rule-cards"><div><span>①</span><b>Rate</b><small>Rate a statement from 1 to 7</small></div><div><span>②</span><b>Roll</b><small>Roll the dice to move</small></div><div><span>🐍🪜</span><b>Climb &amp; slide</b><small>Ladders lift, snakes bite</small></div><div><span>👑</span><b>Win</b><small>First to square 100 is hired</small></div></div>
+<details class="rules"><summary><b>📘 Full game rules</b></summary>${RULES_HTML}</details></section>`,'Registration');
+$('#obGo').onclick=obForm;$('#obGo').focus({preventScroll:true})}
+
+/* Interface 2: your details */
+const FIELDS=[['nm','nm-e'],['age','age-e'],['em','em-e'],['gd','gd-e'],['st','st-e'],['ck','ck-e']];
+function obRead(){const g=id=>{const e=$('#'+id);return e?e.value.trim():''};return{name:g('nm'),age:g('age'),email:g('em'),gender:g('gd'),status:g('st'),consent:!!($('#ck')&&$('#ck').checked)}}
+function obForm(){
+ const v=R.form||{},opt=(val,lab,cur)=>`<option value="${val}"${cur===val?' selected':''}>${lab}</option>`;
+ view(`${obSteps(2)}
+<section class="card ob-card"><h2>Tell us about you</h2><p class="mut">Five quick details, then the game starts. Your answers are stored for research and your results report.</p>
+<form id="obf" novalidate>
+<div class="ob-grid">
+<div class="wide"><label for="nm">Full name</label><input type="text" id="nm" autocomplete="name" aria-describedby="nm-e" value="${esc(v.name||'')}"><p class="fe" id="nm-e" role="alert"></p></div>
+<div><label for="age">Age</label><input type="number" id="age" inputmode="numeric" min="15" max="99" step="1" autocomplete="off" aria-describedby="age-e" value="${esc(v.age||'')}"><p class="fe" id="age-e" role="alert"></p></div>
+<div><label for="gd">Gender</label><select id="gd" aria-describedby="gd-e">${opt('','Select…',v.gender||'')}${opt('Male','Male',v.gender)}${opt('Female','Female',v.gender)}</select><p class="fe" id="gd-e" role="alert"></p></div>
+<div class="wide"><label for="em">Email</label><input type="email" id="em" inputmode="email" autocomplete="email" aria-describedby="em-e" value="${esc(v.email||'')}"><p class="fe" id="em-e" role="alert"></p></div>
+<div class="wide"><label for="st">Current status</label><select id="st" aria-describedby="st-e">${opt('','Select…',v.status||'')}${opt('Working','Working',v.status)}${opt('UG','UG (Undergraduate)',v.status)}${opt('PG','PG (Postgraduate)',v.status)}</select><p class="fe" id="st-e" role="alert"></p></div>
+</div>
+<label class="ob-check"><input type="checkbox" id="ck" aria-describedby="ck-e"${v.consent?' checked':''}><span>I agree that my details and answers may be stored and analysed for this survey.</span></label><p class="fe" id="ck-e" role="alert"></p>
+<p class="fe" id="obErr" role="alert"></p>
+<div class="ob-actions"><button type="button" class="alt" id="obBack">← Back</button><button type="button" class="ob-go" id="obStart">Start Survey &amp; Game</button></div>
+</form></section>`,'Registration');
+ $('#obBack').onclick=()=>{R.form=obRead();obIntro()};
+ if(matchMedia('(hover:hover)').matches)$('#nm').focus({preventScroll:true});
+ const go=()=>{
+  const f=obRead(),age=Number(f.age),err={};
+  if(f.name.length<2)err.nm='Please enter your full name.';
+  if(f.age===''||!Number.isInteger(age)||age<15||age>99)err.age='Enter a whole-number age between 15 and 99.';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email))err.em='Enter a valid email, like name@example.com.';
+  if(!f.gender)err.gd='Please choose one option.';
+  if(!f.status)err.st='Please choose Working, UG or PG.';
+  if(!f.consent)err.ck='Please tick the consent box to continue.';
+  const idOf={nm:'nm',age:'age',em:'em',gd:'gd',st:'st',ck:'ck'};let first=null;
+  FIELDS.forEach(([k,ek])=>{$('#'+ek).textContent=err[k]||'';const el=$('#'+idOf[k]);if(err[k]){el.setAttribute('aria-invalid','true');first=first||el}else el.removeAttribute('aria-invalid')});
+  R.form=f;
+  $('#obErr').textContent=first?'Some details are missing or need fixing. Please check the fields marked in red.':'';
+  if(first){first.focus();return}
+  /* profile -> respondent record (same fields the rest of the game already reads) */
+  R.name=f.name;R.email=f.email;R.ageNum=age;R.age=ageGroup(age);R.gender=f.gender;R.status=f.status;
+  R.id=R.id||'R'+Date.now().toString(36).toUpperCase();
+  $('#obStart').disabled=true;
+  try{startLudo()}catch(x){const b=$('#obStart'),m=$('#obErr');if(b)b.disabled=false;if(m)m.textContent='Could not start the game. Please try again.';console.error(x)}};
+ /* click handler (not form submit) so it also works where forms are blocked, e.g. sandboxed previews */
+ $('#obStart').onclick=go;
+ $('#obf').onsubmit=e=>{e.preventDefault();go()};
+ $('#obf').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'&&e.target.type!=='checkbox'){e.preventDefault();go()}})}
+
+/* ===== GAME 2: LUDO / SNAKES & LADDERS SURVEY ===== */
+const RULES_HTML=`<div class="hl"><b>🎯 Goal:</b> be the <b>first to reach square 100</b> (the 👑 CFO's Office). Whoever gets there first, you or Alex, is hired as CFO.</div>
+<h3>🔁 Each turn</h3><ul><li><b>1.</b> A leadership statement appears. Rate it from <b>1 (Strongly disagree)</b> to <b>7 (Strongly agree)</b>. Click, or press keys 1 to 7.</li><li><b>2.</b> Tap the 🎲 dice (or press Space or Enter) to roll. You move the number you roll (1 to 6) plus your rating bonus.</li><li><b>3.</b> Alex, your rival, takes a turn.</li><li>🎲 You and Alex each roll <b>once</b> per round: you first, then Alex.</li></ul>
+<h3>📝 The statements</h3><ul><li>There are <b>20 statements</b> in 4 levels of 5: IQ &amp; Analytical Rigor, EQ &amp; People Leadership, Decision-Making &amp; Strategy, and Ethics &amp; Integrity. <b>The game ends as soon as someone reaches square 100</b>, so you may not see all 20 statements if that happens early.</li><li><b>Your ratings add a small move bonus.</b> A rating of 7 adds +3 squares to your dice roll, a 6 adds +2, a 5 adds +1, and 1 to 4 add nothing (you move only what the dice show). <b>Fairness limit:</b> you may give a 7 on at most 4 statements and a 6 on at most 6 statements; the buttons show how many are left and lock when used up. Alex gets a fixed +1 on every roll as a benchmark. There are no right or wrong answers, so answer honestly: the same ratings build your leadership profile at the end.</li><li>After each level you get a Gold, Silver, Bronze or Learner badge for fun.</li></ul>
+<h3>🗺️ Special squares</h3><ul><li>🪜 <b>Ladders</b> carry you up. 🐍 <b>Snakes</b> bite and slide you down.</li><li>⚔️ <b>Finance Challenge:</b> a 10-second finance question (spot the wrong total, or match a term to its meaning). A correct answer moves you 3 bonus squares. Alex does not get challenge bonuses.</li><li>✨ <b>Power-up:</b> you get a random power card.</li><li>📈 <b>Market Moments</b> happen every 4th turn. They can move you forward or back (Alex is not affected: he only moves his dice roll + 1), and any ladder, snake or special square you land on still counts.</li></ul>
+<h3>🃏 Power cards</h3><ul><li>🛡️ <b>Whistleblower Shield:</b> blocks your next snake.</li><li>🎯 <b>Lucky Dice:</b> roll two dice and keep the higher.</li><li>🚀 <b>Turbo Boost:</b> doubles your next move.</li><li>🎲 <b>Insider Tip:</b> move 2 bonus spaces after your move.</li><li>⏪ <b>Golden Parachute:</b> undo your last move.</li></ul>
+<h3>🔥 Near the finish</h3><ul><li>From square 90 you hear a heartbeat and see how much you need to roll to reach the office.</li></ul>
+<h3>🔒 Your data</h3><ul><li>Your name, answers and results are recorded for research.</li></ul>`;
+function ludoRules(){view(`<section class="card rules"><div class="game-kicker">BEFORE YOU START</div><h2>📘 Game rules</h2>${RULES_HTML}<p style="margin-top:14px"><button id="startReal">I understand. Start the game</button> <button id="backR" class="alt">Back</button></p></section>`,'Game rules');$('#startReal').onclick=startLudo;$('#backR').onclick=ludoIntro}
+function ludoIntro(){
+ view(`<section class="card ludo-intro"><div class="game-kicker">SNAKES &amp; LADDERS • BOARDROOM CHALLENGES</div><h2>Ready to climb, slide &amp; decide?</h2>
+ <p class="lead">Every answer changes your journey. Climb real ladders, watch out for lively snakes, and race the Bot to the finish.</p>
+ <div class="rule-cards"><div><span>✓</span><b>Roll the dice</b><small>Dice decide how far you move</small></div><div><span>↯</span><b>Answer honestly</b><small>Your rating never changes who wins</small></div><div><span>🐍🪜</span><b>Snakes &amp; Ladders</b><small>Slide down or climb up</small></div><div><span>⚔️</span><b>Challenge square</b><small>Finance task: correct = +3 squares</small></div></div>
+ <p class="mut">Each turn you rate one statement from 1 (Strongly disagree) to 7 (Strongly agree). A dice roll sets how far you move. Your rating adds a small bonus to your dice roll (5 = +1, 6 = +2, 7 = +3; 1 to 4 = no bonus). To keep it fair, you can give at most <b>four 7s</b> and <b>six 6s</b> across the 20 statements, so choose where you are really strongest. Then Alex rolls a die and adds a +1 benchmark bonus. Every 4th turn a Market Moment moves you (Alex is not affected). The first player to reach square 100 is hired as CFO. All 20 statements are still completed.</p>
+ <button id="startLudo">Start the survey game</button></section>`,'Snakes & Ladders Survey');
+ $('#startLudo').onclick=ludoRules;
+}
+
+const LUDO_SNAKES={62:19,47:26,16:6,87:24,32:8,57:18,33:7,30:9,67:46};
+const LUDO_LADDERS={80:100,71:91,31:68,50:92,77:96,79:98,21:61,76:94,69:93};
+const CHAL=[15,27,43,53,65,78,95],PWR=[10,25,48,58,63,73,97];
+
+const SNAKE_NAMES=['Audit Fail','Fraud','Missed Goal','Data Leak','Overspend','Bad Forecast','Lawsuit','Cash Crunch','Bad Merger'];
+const LADDER_NAMES=['Promotion','Merger','Big Deal','Mentor','Savings','New Role','Clean Audit','Investor','Bonus'];
+function shuffleLayout(){
+ const row=p=>Math.floor((p-1)/10),pt=p=>{const q=boardPath(p);return [q.x,q.y]},R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+ const cr=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]);
+ const ps=(p,a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],L=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/L));return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy)};
+ const sd=(a,b,c,d)=>(cr(a,b,c)*cr(a,b,d)<0&&cr(c,d,a)*cr(c,d,b)<0)?0:Math.min(ps(a,c,d),ps(b,c,d),ps(c,a,b),ps(d,a,b));
+ for(let at=0;at<300;at++){
+  const items=[],used=new Set(),sn=[],ld=[];
+  const add=(c,k)=>{if(used.has(c[0])||used.has(c[1]))return;const A=pt(c[0]),B=pt(c[1]);
+   for(const it of items){if(sd(A,B,it.A,it.B)<(k===it.k?(k==='s'?8.2:5.4):6.9))return}
+   items.push({k,A,B});used.add(c[0]);used.add(c[1]);(k==='s'?sn:ld).push(c)};
+  for(let i=0;i<2500&&(sn.length<9||ld.length<9);i++){
+   if(sn.length<9){const h=R(24,90),t=R(2,h-20);if(row(h)-row(t)>=2&&Math.hypot(pt(h)[0]-pt(t)[0],pt(h)[1]-pt(t)[1])>=22)add([h,t],'s')}
+   if(ld.length<9){const b=R(2,80),t=R(b+18,100);if(row(t)-row(b)>=2&&Math.hypot(pt(b)[0]-pt(t)[0],pt(b)[1]-pt(t)[1])>=20)add([b,t],'l')}}
+  if(sn.length<9||ld.length<9)continue;
+  const free=[];for(let q=2;q<100;q++)if(!used.has(q))free.push(q);
+  const clear=q=>Math.min(...items.map(it=>sd(pt(q),pt(q),it.A,it.B))),taken=new Set();
+  const pick=ts=>ts.map(t=>{t+=R(-3,3);const c=free.filter(q=>!taken.has(q)).sort((a,b)=>((clear(a)<5.2)-(clear(b)<5.2))||Math.abs(a-t)-Math.abs(b-t))[0];taken.add(c);return c});
+  const ch=pick([13,27,41,55,69,83,95]),pw=pick([9,23,36,49,61,74,89]);
+  [LUDO_SNAKES,LUDO_LADDERS].forEach(o=>Object.keys(o).forEach(k=>delete o[k]));
+  sn.forEach(c=>LUDO_SNAKES[c[0]]=c[1]);ld.forEach(c=>LUDO_LADDERS[c[0]]=c[1]);
+  CHAL.length=0;CHAL.push(...ch.sort((a,b)=>a-b));PWR.length=0;PWR.push(...pw.sort((a,b)=>a-b));
+  return true}
+ return false; // keeps the default hand-checked layout
+}
+const PRE=['shield','double','turbo'];
+const CARDS={shield:['🛡️','Whistleblower Shield','blocks your next snake'],double:['🎯','Lucky Dice','roll two dice and keep the higher (before your question)'],turbo:['🚀','Turbo Boost','doubles your next move (before your question)'],tip:['🎲','Insider Tip','move 2 bonus spaces (after your move)'],parachute:['⏪','Golden Parachute','undo your last move']};
+const MKT=[['📉 Market crash','You slide back 3 squares.',p=>{p.pos=Math.max(1,p.pos-3)}],['📈 Bull run','You jump ahead 3 squares.',p=>{p.pos=Math.min(99,p.pos+3)}],['🔍 Surprise audit','You move back 3 squares.',p=>{p.pos=Math.max(1,p.pos-3)}],['🤝 Team off-site','You move forward 3 squares.',p=>{p.pos=Math.min(99,p.pos+3)}]];
+const LUDO_COLORS=['#1f6f78','#a9822f','#2f5f95','#6f4d9c'];
+
+function ludoAllQuestions(){
+  return Q.flatMap((levelQuestions,li)=>levelQuestions.map((q,qi)=>({level:li+1,qid:li*5+qi+1,skill:LV[li][1],title:q[0],scenario:q[1],options:LIKERT,best:6})));
+}
+
+function boardPath(pos){
+  pos=Math.max(1,Math.min(100,pos));
+  const row=Math.floor((pos-1)/10);
+  const colInRow=(pos-1)%10;
+  const col=row%2===0?colInRow:9-colInRow;
+  return {x:(col+.5)*10,y:(9-row+.5)*10};
+}
+
+function snakeShape(sn,ph){
+ const N=56,pts=[],T=[],Nm=[],L=[],R=[],B1=[],B2=[],f=q=>q[0].toFixed(2)+' '+q[1].toFixed(2),A=2.1*(1+.12*Math.sin(ph*.55+sn.ph));
+ const hw=k=>1.65*(1-.8*Math.pow(k/N,.8));
+ for(let k=0;k<=N;k++){const t=k/N,env=Math.pow(Math.sin(Math.PI*t),.55),off=Math.sin(2*Math.PI*sn.waves*t-ph)*A*env*sn.side;pts.push([sn.p1.x+sn.dx*t+sn.nx*off,sn.p1.y+sn.dy*t+sn.ny*off])}
+ for(let k=0;k<=N;k++){const a=pts[Math.max(0,k-1)],b=pts[Math.min(N,k+1)],tx=b[0]-a[0],ty=b[1]-a[1],tl=Math.hypot(tx,ty)||1,w=hw(k),q=pts[k];
+  T.push([tx/tl,ty/tl]);Nm.push([-ty/tl,tx/tl]);
+  L.push([q[0]-ty/tl*w,q[1]+tx/tl*w]);R.push([q[0]+ty/tl*w,q[1]-tx/tl*w]);B1.push([q[0]-ty/tl*w*.4,q[1]+tx/tl*w*.4]);B2.push([q[0]+ty/tl*w*.4,q[1]-tx/tl*w*.4])}
+ const d=Math.hypot(pts[1][0]-pts[0][0],pts[1][1]-pts[0][1]);
+ const Q=(k,o,a,b)=>{const c=[pts[k][0]+Nm[k][0]*o,pts[k][1]+Nm[k][1]*o],t=T[k],n=Nm[k];return 'M'+f([c[0]+t[0]*a,c[1]+t[1]*a])+'L'+f([c[0]+n[0]*b,c[1]+n[1]*b])+'L'+f([c[0]-t[0]*a,c[1]-t[1]*a])+'L'+f([c[0]-n[0]*b,c[1]-n[1]*b])+'Z'};
+ let pat='';const pt=sn.c[3];
+ if(pt==='band')for(let k=2;k<N-3;k+=4)pat+='M'+f(L[k])+'L'+f(L[k+1])+'L'+f(R[k+1])+'L'+f(R[k])+'Z';
+ else if(pt==='diamond')for(let k=2;k<N-4;k+=4)pat+=Q(k+2,0,2*d,hw(k+2)*.82);
+ else if(pt==='blotch')for(let k=2;k<N-5;k+=7)pat+=Q(k+3,0,2.7*d,hw(k+3)*.8);
+ else if(pt==='chev')for(let k=2;k<N-3;k+=4)pat+='M'+f(L[k])+'L'+f(pts[k+2])+'L'+f(R[k])+'L'+f(R[k+1])+'L'+f(pts[k+3])+'L'+f(L[k+1])+'Z';
+ else for(let k=3;k<N-3;k+=3)pat+=Q(k,(k%2?1:-1)*hw(k)*.42,1.1*d,Math.max(.22,hw(k)*.26));
+ const poly=(A,B)=>'M'+A.map(f).join('L')+'L'+B.slice().reverse().map(f).join('L')+'Z';
+ const ang=Math.atan2(pts[0][1]-pts[3][1],pts[0][0]-pts[3][0])*180/Math.PI+Math.sin(ph*.7)*5;
+ return {body:poly(L,R),belly:poly(B1,B2),pat,head:`translate(${pts[0][0].toFixed(2)} ${pts[0][1].toFixed(2)}) rotate(${ang.toFixed(1)})`};
+}
+function snakeLoop(){
+ cancelAnimationFrame(window._snk);
+ if(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ let last=0,ph=0,sp=1.1;
+ const els={};(window.SNK||[]).forEach(sn=>els[sn.a]=['sb','sl','sp','sh'].map(k=>document.getElementById(k+sn.a)));
+ const tick=ts=>{
+  if(!document.getElementById('ludoBoard'))return;
+  window._snk=requestAnimationFrame(tick);
+  if(!last){last=ts;return}if(document.hidden||ts-last<33)return;
+  const dt=Math.min(.05,(ts-last)/1000);last=ts;
+  sp+=((ts<(window.SNK_BOOST||0)?3.4:1.1)-sp)*Math.min(1,dt*4);   // ease speed up/down, no sudden jumps
+  ph+=dt*sp;
+  (window.SNK||[]).forEach(sn=>{const e=els[sn.a];if(!e[0])return;const sh=snakeShape(sn,ph+sn.ph);
+   e[0].setAttribute('d',sh.body);e[1].setAttribute('d',sh.belly);e[2].setAttribute('d',sh.pat);e[3].setAttribute('transform',sh.head)});
+ };
+ window._snk=requestAnimationFrame(tick);
+}
+
+function charSvg(kind,head){
+ const me=kind==='user',suit=me?'#1f86b5':'#c2399a',suit2=me?'#0e4f6e':'#7d1f62',tie=me?'#f2b705':'#ffe27a';
+ const hair=me?'<path d="M7.8 16 C7 4.5 33 4.5 32.2 16 C29 10 11 10 7.8 16Z" fill="#7a4a24" stroke="#4d2c12" stroke-width="1"/><path d="M17 5.6 C18 .8 23.5 1.4 23 6 C21.5 4.6 19 4.6 17 5.6Z" fill="#7a4a24" stroke="#4d2c12" stroke-width=".9"/>'
+  :'<path d="M7.4 16.5 C6.6 3.5 33.4 3.5 32.6 16.5 C30 9.5 22 8.5 14 10.2 C11 11 9 13 7.4 16.5Z" fill="#26211f" stroke="#111" stroke-width="1"/>';
+ const glasses=me?'':'<circle cx="15" cy="18" r="4" fill="rgba(255,255,255,.25)" stroke="#2a1a10" stroke-width="1"/><circle cx="25" cy="18" r="4" fill="rgba(255,255,255,.25)" stroke="#2a1a10" stroke-width="1"/><path d="M19 18 h2" stroke="#2a1a10" stroke-width="1"/>';
+ const mouth=me?'<path d="M17.2 23 Q20 26 22.8 23" fill="none" stroke="#7a3a2a" stroke-width="1.2" stroke-linecap="round"/>':'<path d="M17 23.8 Q21 25.4 23.8 22.6" fill="none" stroke="#7a3a2a" stroke-width="1.2" stroke-linecap="round"/>';
+ const headG=`<circle cx="20" cy="17" r="12.5" fill="#ffe0bf" stroke="#7a4a28" stroke-width="1.3"/>${hair}<circle cx="12.3" cy="21.5" r="2.4" fill="#ff8fa8" opacity=".55"/><circle cx="27.7" cy="21.5" r="2.4" fill="#ff8fa8" opacity=".55"/><g class="eyes"><ellipse cx="15" cy="18" rx="1.9" ry="2.7" fill="#2a1a10"/><ellipse cx="25" cy="18" rx="1.9" ry="2.7" fill="#2a1a10"/><circle cx="15.7" cy="16.9" r=".8" fill="#fff"/><circle cx="25.7" cy="16.9" r=".8" fill="#fff"/></g>${glasses}${mouth}`;
+ if(head)return `<svg viewBox="5 2 30 30" class="chr-head">${headG}</svg>`;
+ return `<svg viewBox="0 0 40 50" class="chr"><ellipse cx="20" cy="46.6" rx="12" ry="3" fill="rgba(0,0,0,.32)"/><g class="chr-in"><ellipse cx="14.5" cy="44" rx="4.3" ry="2.6" fill="#2a1a10"/><ellipse cx="25.5" cy="44" rx="4.3" ry="2.6" fill="#2a1a10"/><rect x="10" y="27" width="20" height="16.5" rx="7" fill="${suit}" stroke="${suit2}" stroke-width="1.3"/><path d="M16.4 27.6 L20 33.2 L23.6 27.6Z" fill="#fff"/><path d="M20 31.6 l-2 2.3 2 7.4 2-7.4z" fill="${tie}" stroke="${suit2}" stroke-width=".6"/><circle cx="8.4" cy="33.5" r="3.2" fill="#ffe0bf" stroke="#7a4a28" stroke-width=".9"/><circle cx="31.6" cy="33.5" r="3.2" fill="#ffe0bf" stroke="#7a4a28" stroke-width=".9"/>${headG}</g></svg>`;
+}
+const CHAR=k=>`<div class="token ${k}" id="${k}Token">${charSvg(k)}<span class="tk-name">${k==='user'?'YOU':'ALEX'}</span></div>`;
+function renderLudoBoard(){
+ const cells=[];
+ // Standard Snakes & Ladders numbering: 1 starts at the bottom-left,
+ // rows alternate direction, and 100 finishes at the top-left.
+ for(let row=9;row>=0;row--){
+   const leftToRight=(row%2===0);
+   for(let c=0;c<10;c++){
+     const pos=leftToRight?row*10+c+1:row*10+(10-c);
+     const isLadder=Object.prototype.hasOwnProperty.call(LUDO_LADDERS,pos);
+     const isSnake=Object.prototype.hasOwnProperty.call(LUDO_SNAKES,pos),isC=CHAL.includes(pos),isP=PWR.includes(pos);
+     const zone=row<2?1:row<5?2:row<8?3:4,cls='ludo-cell z'+zone+((row+c)%2?' b':' a')+(pos===1?' start':'')+(pos===100?' finish':'')+(isLadder?' ladder-start':'')+(isSnake?' snake-start':'')+(isC?' chal':'')+(isP?' pwr':'');
+     const mark=isLadder?'<span class="cell-mark">↗</span>':isSnake?'<span class="cell-mark">↘</span>':isC?'<span class="cell-mark">⚔️</span>':isP?'<span class="cell-mark">✨</span>':'';
+     const special=pos===1?'<span class="start-mark">START</span>':pos===100?'<span class="finish-mark">👑 HOME</span>':'';
+     cells.push(`<div class="${cls}" data-pos="${pos}"><span class="cell-num">${pos}</span>${mark}${special}</div>`);
+   }
+ }
+ let svg=`<svg class="ludo-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+ <defs>
+   <filter id="sdw" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx=".35" dy=".55" stdDeviation=".45" flood-color="#000" flood-opacity=".38"/></filter>
+   <linearGradient id="snakeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7d1f25"/><stop offset=".48" stop-color="#c54435"/><stop offset="1" stop-color="#7d1f25"/></linearGradient>
+   <linearGradient id="snakeHead" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d95b3f"/><stop offset="1" stop-color="#8d2428"/></linearGradient>
+ </defs>`;
+ const ln=(x1,y1,x2,y2,c,w)=>`<line x1="${x1.toFixed(2)}" y1="${y1.toFixed(2)}" x2="${x2.toFixed(2)}" y2="${y2.toFixed(2)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+ // ---- Ladders: two amber rails with evenly spaced rungs, dark outline for contrast ----
+ Object.entries(LUDO_LADDERS).forEach(([a,b])=>{
+   const p1=boardPath(+a),p2=boardPath(+b),dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,nx=-uy,ny=ux,W=1.25;
+   const rungs=[];for(let t=2.4;t<len-1.4;t+=3.3)rungs.push([p1.x+ux*t,p1.y+uy*t]);
+   let g=`<g class="ld" filter="url(#sdw)">`;
+   [W,-W].forEach(o=>g+=ln(p1.x+nx*o,p1.y+ny*o,p2.x+nx*o,p2.y+ny*o,'#3f270f',1.85));
+   rungs.forEach(r=>g+=ln(r[0]+nx*W,r[1]+ny*W,r[0]-nx*W,r[1]-ny*W,'#3f270f',1.4));
+   rungs.forEach(r=>g+=ln(r[0]+nx*W,r[1]+ny*W,r[0]-nx*W,r[1]-ny*W,'#cfa161',.75));
+   [W,-W].forEach(o=>g+=ln(p1.x+nx*o,p1.y+ny*o,p2.x+nx*o,p2.y+ny*o,'#b98a4b',1.05));
+   rungs.forEach((r,i)=>{if(i%2===0)[W,-W].forEach(o=>g+=ln(r[0]+nx*(o-.75),r[1]+ny*(o-.75),r[0]+nx*(o+.75),r[1]+ny*(o+.75),'#5d3c18',.5))});
+   [W,-W].forEach(o=>g+=ln(p1.x+nx*(o-.22),p1.y+ny*(o-.22),p2.x+nx*(o-.22),p2.y+ny*(o-.22),'#ecd2a0',.32));
+   g+=`<text class="lbl" x="${Math.max(7,Math.min(93,p1.x)).toFixed(1)}" y="${(p1.y+(p1.y>85?-3.4:5.4)).toFixed(1)}" text-anchor="middle">${LADDER_NAMES[Object.keys(LUDO_LADDERS).indexOf(a)%9]}</text>`;
+   svg+=g+'</g>';
+ });
+ // ---- Snakes: single tapered polygon per snake, re-shaped every frame by snakeLoop() so they slither ----
+ const PAL=[['#cf3b2e','#3a0f0b','#151010','band'],['#4fae35','#1e5a14','#e8e04c','diamond'],['#d9823a','#6b3510','#5a2a0e','blotch'],['#3d8fd6','#173f6b','#d6ecff','chev'],['#7a52b8','#3a2266','#f0a04b','speck'],['#a8814f','#4a3418','#3d2a14','blotch',1],['#8a9a3a','#3f4a14','#2a3010','diamond'],['#2fa39a','#0e5550','#f2f0d0','band'],['#7c5a3a','#2e1e10','#d9c08a','speck']];
+ window.SNK=[];
+ Object.entries(LUDO_SNAKES).forEach(([a,b],idx)=>{
+   const p1=boardPath(+a),p2=boardPath(+b),dx=p2.x-p1.x,dy=p2.y-p1.y,len=Math.hypot(dx,dy)||1;
+   const sn={a:+a,p1,dx,dy,nx:-dy/len,ny:dx/len,side:idx%2?1:-1,waves:Math.max(2,Math.round(len/12)),c:PAL[idx%PAL.length],ph:idx*1.7};
+   SNK.push(sn);const sh=snakeShape(sn,sn.ph);
+   svg+=`<g class="sn" data-snake="${a}" filter="url(#sdw)"><path id="sb${a}" d="${sh.body}" fill="${sn.c[0]}" stroke="${sn.c[1]}" stroke-width=".55" stroke-linejoin="round"/><path id="sl${a}" d="${sh.belly}" fill="#fff" opacity=".22"/><path id="sp${a}" d="${sh.pat}" fill="${sn.c[2]}" opacity=".9"/><g id="sh${a}" data-snake-head="${a}" transform="${sh.head}"><path class="snk-tongue" style="animation-delay:${(idx*.37).toFixed(2)}s" d="M4.6 0 L6.2 0 L7 -.8 M6.2 0 L7 .8" fill="none" stroke="#e0262b" stroke-width=".4" stroke-linecap="round"/>${sn.c[4]?`<ellipse cx="-1.2" cy="0" rx="3.2" ry="4.4" fill="${sn.c[0]}" stroke="${sn.c[1]}" stroke-width=".5"/><path d="M-1.6 -2.2 q1.6 2.2 0 4.4" fill="none" stroke="${sn.c[2]}" stroke-width=".7" stroke-linecap="round"/>`:''}<path d="M-2 -2.1 C.5 -2.9 3.6 -1.9 4.9 0 C3.6 1.9 .5 2.9 -2 2.1Z" fill="${sn.c[0]}" stroke="${sn.c[1]}" stroke-width=".55" stroke-linejoin="round"/><g class="snk-eye" style="animation-delay:${(idx*.6).toFixed(2)}s"><circle cx="1.7" cy="-1.2" r=".62" fill="#f5e050" stroke="#222" stroke-width=".15"/><circle cx="1.7" cy="1.2" r=".62" fill="#f5e050" stroke="#222" stroke-width=".15"/><ellipse cx="1.8" cy="-1.2" rx=".14" ry=".5" fill="#111"/><ellipse cx="1.8" cy="1.2" rx=".14" ry=".5" fill="#111"/></g><circle cx="4.1" cy="-.45" r=".14" fill="#111"/><circle cx="4.1" cy=".45" r=".14" fill="#111"/></g></g><text class="lbl" x="${Math.max(7,Math.min(93,p2.x)).toFixed(1)}" y="${(p2.y+(p2.y>85?-3.4:5.4)).toFixed(1)}" text-anchor="middle">${SNAKE_NAMES[idx%9]}</text>`;
+ });
+ svg+='</svg>';
+ return `<div class="ludo-board-shell theme-premium"><div class="ludo-board" id="ludoBoard"><div class="ludo-grid">${cells.join('')}</div>${svg}<div class="board-shine"></div><div class="board-ripple r1"></div><div class="board-ripple r2"></div><div class="zone-tag" style="top:80.8%">🏢 <span>CUBICLE</span></div><div class="zone-tag" style="top:50.8%">📊 <span>MANAGER FLOOR</span></div><div class="zone-tag" style="top:20.8%">🏙️ <span>VP SUITE</span></div><div class="zone-tag" style="top:.8%">👑 <span>CFO OFFICE</span></div><div class="board-title"><b>100</b> • SNAKES &amp; LADDERS • <b>1</b></div><i class="board-pin tl"></i><i class="board-pin tr"></i><i class="board-pin bl"></i><i class="board-pin br"></i>
+   ${CHAR('user')}${CHAR('bot')}</div><div class="dice-tray"><div class="die" id="dieFace"></div><div class="die-cap" id="dieCap">Answer to move</div></div></div>`;
+}
+
+function setToken(id,pos,offset){
+ const t=$(id); if(!t)return;
+ const p=boardPath(pos);
+ t.style.left=(p.x+offset.x)+'%';t.style.top=(p.y+offset.y)+'%';
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+async function moveToken(id,state,steps,offset){
+ const token=$(id);
+ const start=state.pos;
+ for(let i=0;i<steps;i++){
+   if(state.over)return {before:start,after:state.pos,special:null};
+   if(state.pos<100)state.pos++;
+   setToken(id,state.pos,offset);
+   ludoHud();
+   await sleep(105);
+ }
+ const landed=state.pos;
+ let special=null;
+ if(LUDO_LADDERS[landed])special='ladder';
+ else if(LUDO_SNAKES[landed])special='snake';
+ if(special){
+   if(special==='snake')animateSnake(landed);
+   await sleep(170);
+   state.pos=special==='ladder'?LUDO_LADDERS[landed]:LUDO_SNAKES[landed];
+   setToken(id,state.pos,offset);
+   ludoHud();
+   await sleep(special==='snake'?560:430);
+ }
+ return {before:start,after:state.pos,special};
+}
+
+/* ----- background music (procedural, tempo & mood follow the level) ----- */
+let musStep=0;const SCALES=[[0,2,4,7,9],[0,3,5,7,10],[0,2,3,7,8],[0,4,7,9,12]];
+function mtone(f,d,t,v){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0008,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}}
+function musicLoop(){if(!G||G.over||G.mode!=='ludo')return;const L=Math.min(3,Math.floor(G.qi/5)),near=G.user.pos>=80,ms=Math.round([330,290,260,230][L]*(near?.7:1)),sc=SCALES[L],root=[262,220,196,294][L];
+ const n=sc[(musStep*3+Math.floor(musStep/4))%sc.length];mtone(root*Math.pow(2,n/12),.35,'triangle',.022);if(musStep%4===0)mtone(root/2,.5,'sine',.035);if(near&&musStep%2===0)mtone(root*2,.1,'square',.008);
+ musStep++;setTimeout(musicLoop,ms)}
+const THEMES=['🌅 Morning','🌇 Sunset','🌙 Night','✨ Golden Hour'];
+function applyTheme(){const b=$('#ludoBoard');if(!b||!G)return;let o=$('#themeOv');if(!o){o=document.createElement('div');o.id='themeOv';b.appendChild(o)}o.className='th'+Math.min(3,Math.floor(G.qi/5))}
+function tenseBanner(){if(!G||G.user.pos<90||G.user.pos>=100)return;const need=100-G.user.pos,d=document.createElement('div');d.className='tense';d.textContent="🔥 So close! Roll "+(need<=1?'anything':need+' or more')+" to reach the CFO's Office!";document.body.appendChild(d);setTimeout(()=>d.remove(),3200)}
+/* ----- finance mini-challenge (10 seconds) ----- */
+const TERMS=[['Asset','Something a company owns that has value'],['Liability','Money a company owes to others'],['Equity','The owners\' share after liabilities are paid'],['Revenue','Income earned from selling goods or services'],['Depreciation','Spreading an asset\'s cost over its useful life'],['Dividend','Profit paid out to shareholders'],['Audit','An independent check that accounts are fair and correct'],['Cash flow','Money moving in and out of a business'],['Budget','A plan of expected income and spending'],['Invoice','A bill asking a customer to pay']];
+async function finTask(){
+ const t0=Date.now();let opts,correct,expl,title;
+ if(Math.random()<.5){const rows=[0,1,2].map(()=>{const a=10+rnd(80),b=10+rnd(80);return{a,b,c:a+b}});correct=rnd(3);const real=rows[correct].c;rows[correct].c+=pick([-10,-1,1,10]);title='Spot the wrong total';expl='The correct total was '+real+'.';opts=rows.map((r,i)=>`<button class="ludo-opt" data-a="${i}">${r.a} + ${r.b} = ${r.c}</button>`).join('')}
+ else{const t=pick(TERMS),all=shuffle([t,...shuffle(TERMS.filter(x=>x!==t)).slice(0,2)]);correct=all.indexOf(t);title='What does \u201c'+t[0]+'\u201d mean?';expl=t[0]+' means: '+t[1]+'.';opts=all.map((x,i)=>`<button class="ludo-opt" data-a="${i}">${x[1]}</button>`).join('')}
+ panel('\u{0001f4bc} FINANCE CHALLENGE \u2022 10s',title,'Be quick! No time to waste.',0);let left=10;const lab=$('#chLabel'),iv=setInterval(()=>{left--;if(lab)lab.textContent='\u{0001f4bc} FINANCE CHALLENGE \u2022 '+left+'s';if(left<=3)sfx2('chip');if(left<=0)clearInterval(iv)},1000);
+ const a=await Promise.race([ask(opts+'<div class="cdbar"><i></i></div>'),sleep(10000).then(()=>'-1')]);clearInterval(iv);
+ const ok=+a===correct;(G.fin=G.fin||[]).push({ok:ok?1:0,sec:+((Date.now()-t0)/1000).toFixed(1)});
+ if(ok){sfx2('win');confetti()}else sfx2('lose');
+ panel(ok?'\u2714 Correct! +3 bonus squares':(a==='-1'?'\u23f1 Time is up!':'\u2716 Not quite'),title,expl,0);
+ await ask('<button class="ludo-opt" data-a="c">Continue</button>');if(ok)await moveBy('user',3)}
+function noiseBurst(d,v,w,f){if(MUTE)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);const s=AC.createBufferSource(),fl=AC.createBiquadFilter(),g=AC.createGain();fl.type='highpass';fl.frequency.value=f;g.gain.value=v;s.buffer=b;s.connect(fl);fl.connect(g);g.connect(AC.destination);s.start(AC.currentTime+w)}catch(e){}}
+async function snakeBite(s,w){
+ const b=$('#ludoBoard'),t=$(TID[w]);if(!b){await jump(w,LUDO_SNAKES[s]);return}
+ const p=boardPath(s),o=document.createElement('div');o.className='bite-fx';o.style.left=p.x+'%';o.style.top=p.y+'%';
+ o.innerHTML='<div class="bite-snake">🐍</div><div class="bite-txt">'+snakeName(s)+'!</div>';b.appendChild(o);
+ noiseBurst(.5,.22,0,3000);animateSnake(s);b.classList.add('flash');
+ const shl=$('.ludo-board-shell');if(shl)shl.classList.add('slowmo');if(navigator.vibrate&&!document.body.classList.contains('calm'))try{navigator.vibrate([250,80,250])}catch(e){}
+ setTimeout(()=>{sfx2('chomp');b.classList.add('shakeb');noiseBurst(.12,.3,0,300);if(t)t.classList.add('bitten');fx(s,'dust')},420);
+ await sleep(1100);b.classList.remove('shakeb','flash');o.remove();if(shl)shl.classList.remove('slowmo');
+ sfx2('slide');if(t){t.classList.remove('bitten');t.classList.add('sliding')}
+ await jump(w,LUDO_SNAKES[s]);await sleep(500);
+ if(t){t.classList.remove('sliding');t.classList.add('dizzy')}
+ sfx2('lose');await sleep(800);if(t)t.classList.remove('dizzy')}
+async function ladderClimb(s,w){const t=$(TID[w]);fx(s,'spark');sfx2('climb');if(t)t.classList.add('climbing');await sleep(300);await jump(w,LUDO_LADDERS[s]);await sleep(450);if(t)t.classList.remove('climbing')}
+function animateSnake(pos){
+ const board=$('#ludoBoard');
+ if(!board)return;
+ board.classList.remove('snake-active');window.SNK_BOOST=performance.now()+1400;
+ board.querySelectorAll('[data-snake="'+pos+'"],[data-snake-head="'+pos+'"]').forEach(el=>{el.style.animationPlayState='running'});
+ void board.offsetWidth;
+ board.classList.add('snake-active');
+ setTimeout(()=>board.classList.remove('snake-active'),1050);
+}
+
+function syncChips(el,n){if(!el)return;n=Math.max(0,Math.min(10,n));const live=()=>[...el.querySelectorAll('.chip:not(.out)')];
+ while(live().length>n){const c=live().pop();c.classList.add('out');setTimeout(()=>c.remove(),320)}
+ let cur=live().length;while(cur<n){const c=document.createElement('i');c.className='chip c'+(cur%4);c.style.setProperty('--i',cur);el.appendChild(c);cur++}
+ el.classList.toggle('low',n<5);if(n!==+el.dataset.n){if(el.dataset.n)sfx2('chip');el.dataset.n=n}}
+function renderDock(){const d=$('#handDock');if(!d)return;const n=G.hand.length,arm=[G.armed.shield&&'shield',G.armed.double&&'double',G.armed.turbo&&'turbo'].filter(Boolean);
+ const h=n||arm.length?G.hand.map((k,i)=>`<button type="button" class="pcard" data-k="${k}" style="--r:${((i-(n-1)/2)*7).toFixed(1)}deg" title="${CARDS[k][1]}: ${CARDS[k][2]}"><span>${CARDS[k][0]}</span><small>${CARDS[k][1]}</small></button>`).join('')+arm.map(k=>`<div class="pcard armed"><span>${CARDS[k][0]}</span><small>ARMED</small></div>`).join(''):'<div class="dock-empty">🃏 Your hand is empty — land on ✨ to draw a card</div>';
+ if(G._dh!==h){const grew=n>(G._dn||0);G._dn=n;G._dh=h;d.innerHTML=h;if(grew){const pc=d.querySelectorAll('button.pcard');if(pc.length)pc[pc.length-1].classList.add('new')}}}
+function ludoHud(){
+ renderDock();
+ const set=(id,v)=>{const e=$(id);if(e)e.textContent=v},bar=(id,v)=>{const e=$(id);if(e)e.style.width=v+'%'};
+ set('#userSq',G.user.pos);set('#botSq',G.bot.pos);{const li=Math.min(3,Math.floor(G.qi/5));set('#squareLabel','Level '+(li+1)+' of 4 \u00b7 '+LV[li][1]+' \u00b7 Square '+G.user.pos)}
+ set('#userPosSide',G.user.pos);set('#botPosSide',G.bot.pos);set('#turnCount',G.turn);set('#qCountSide',Math.min(G.qi+1,G.qs.length)+' of '+G.qs.length);bar('#qProgress',G.qi/G.qs.length*100);
+ const h=$('#answerStatus');if(h){const html='<b class="hand-t">Your cards</b>'+(G.hand.length?G.hand.map(k=>`<span class="hand-chip" title="${CARDS[k][2]}">${CARDS[k][0]} ${CARDS[k][1]}</span>`).join(''):'<span class="hand-none">None yet — land on ✨ to earn one</span>')+(G.armed.shield?'<span class="hand-chip armed">🛡️ Shield armed</span>':'')+(G.armed.double?'<span class="hand-chip armed">🎯 Lucky Dice armed</span>':'')+(G.armed.turbo?'<span class="hand-chip armed">🚀 Turbo armed</span>':'');if(G._hh!==html){G._hh=html;h.innerHTML=html}}
+}
+function hudAttach(){
+ const side=$('.ludo-side'),opts=$('#ludoOptions'),lab=$('#chLabel');if(!side||!opts||!lab)return;
+ const sync=()=>{const q=$('#qPrompt').style.display!=='none',has=opts.querySelector('button');
+  side.dataset.phase=q?'question':has?'action':'wait';
+  const alex=/ALEX/i.test(lab.textContent),c=side.querySelectorAll('.player-card');
+  if(c[0])c[0].classList.toggle('active',!alex);if(c[1])c[1].classList.toggle('active',alex);
+  const ut=$('#userToken'),bt=$('#botToken');if(ut)ut.classList.toggle('turn',!alex);if(bt)bt.classList.toggle('turn',alex);
+  const ph=side.dataset.phase,changed=ph!==window._lp;window._lp=ph;
+  if(changed){const cc=$('.challenge-card');
+   if(ph==='question'&&cc){cc.tabIndex=-1;cc.focus({preventScroll:true})}
+   if(matchMedia('(max-width:900px)').matches){const toB=/MOVE|ROLL|ALEX|MARKET/i.test(lab.textContent),t=ph==='question'?cc:(toB?$('#ludoBoard'):null);
+    if(t)t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:t.id==='ludoBoard'?'center':'start'})}}};
+ new MutationObserver(sync).observe(side,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style']});
+ 
+ // ---- engagement layer ----
+ const shell=$('.ludo-board-shell'),log=$('#moveLog');
+ if(log){log.setAttribute('aria-live','polite');log.setAttribute('role','status')}
+ opts.setAttribute('role','group');opts.setAttribute('aria-label','Answer options');
+ let lastToast='',lastWho='';
+ const toast=(msg,kind)=>{if(!shell||msg===lastToast)return;lastToast=msg;setTimeout(()=>{if(lastToast===msg)lastToast=''},1500);
+  const t=document.createElement('div');t.className='hud-toast '+(kind||'');t.textContent=msg;shell.appendChild(t);setTimeout(()=>t.remove(),2450)};
+ const confetti=()=>{if(!shell)return;const cl=['#d4a84f','#3fb6e0','#d97aa9','#4fb286','#fff'];
+  for(let i=0;i<26;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'%';c.style.background=cl[i%5];c.style.animationDelay=Math.random()*.6+'s';shell.appendChild(c);setTimeout(()=>c.remove(),3200)}};
+ // turn banner + special-moment toasts, driven by the existing panel text
+ new MutationObserver(()=>{const l=lab.textContent,t=($('#lqTitle')||{}).textContent||'';
+  const alex=/ALEX/i.test(l);
+  if(/MARKET/.test(l))toast(t+' — '+(($('#lqScenario')||{}).textContent||''),'');
+  else if(/CFO/.test(l)){toast("🏆 "+t,'up');confetti()}
+  else if(/CONVINCED/.test(l))toast('Board not convinced yet — back to 90','dn');
+  else if(/CHALLENGE/.test(l)&&!/STRONG|NOT THE/.test(l))toast('⚔ Boardroom Challenge — bonus question','');
+  else if(/STRONG/.test(l))toast(l,'up');
+  else if(/NOT THE/.test(l))toast(l,'dn');
+  else if(/ALEX|YOUR|QUESTION/.test(l)){const w=alex?'alex':'you';if(w!==lastWho){lastWho=w;toast(alex?"Alex's turn":'Your turn',w)}}
+ }).observe(lab,{childList:true,characterData:true,subtree:true});
+ if(log)new MutationObserver(()=>{const m=log.textContent;
+  if(/ladder/i.test(m))toast('🪜 Ladder! Climb up','up');
+  else if(/snake/i.test(m)&&!/blocked/i.test(m))toast('🐍 Snake! Slide down','dn');
+  else if(/blocked/i.test(m))toast('🛡️ Shield blocked the snake!','up');
+  else if(/Power-Up!/.test(m))toast('✨ Power-Up card collected','');
+ }).observe(log,{childList:true,characterData:true,subtree:true});
+ // highlight where each player stands + hop animation
+ [['#userPosSide','here-you','#userToken'],['#botPosSide','here-alex','#botToken']].forEach(([id,cls,tk])=>{const el=$(id);if(!el)return;
+  const mark=()=>{document.querySelectorAll('.'+cls).forEach(c=>c.classList.remove(cls));const c=document.querySelector('.ludo-cell[data-pos="'+el.textContent+'"]');if(c){c.classList.add(cls);c.classList.remove('land');void c.offsetWidth;c.classList.add('land')}
+   const t=$(tk);if(t){t.classList.remove('hop');void t.offsetWidth;t.classList.add('hop')}};
+  new MutationObserver(mark).observe(el,{childList:true,characterData:true,subtree:true});mark()});
+ // streak chip + milestones
+ const qc=$('#qCountSide');
+ if(qc){const chip=document.createElement('span');chip.className='streak';chip.hidden=true;qc.parentNode.appendChild(chip);
+  new MutationObserver(()=>{const n=parseInt(qc.textContent,10);
+   const a=(typeof G!=='undefined'&&G.answers||[]).filter(x=>x.kind==='turn');let st=0;for(let i=a.length-1;i>=0&&a[i].ok;i--)st++;
+   chip.hidden=st<2;chip.textContent='🔥 '+st+' strong answers in a row';
+   const tot=(G.qs||[]).length||20;
+   if(n===Math.floor(tot/4)+1)toast('25% of the journey done','');else if(n===Math.floor(tot/2)+1)toast('Halfway there!','');else if(n===Math.floor(tot*.75)+1)toast('Final stretch!','')
+  }).observe(qc,{childList:true,characterData:true,subtree:true})}
+ // one-time coach card
+ let seen=false;try{seen=localStorage.getItem('cfo_coach')==='1'}catch(e){}
+ if(!seen){const c=document.createElement('div');c.className='coach';
+  c.innerHTML='<b>How to play</b><br>Rate each statement from <b>1 to 7</b>, then tap the 🎲 dice to roll. You move the number you roll. Be the <b>first to reach square 100</b> to be hired as CFO. Ratings add a bonus to your dice roll: 5 = +1, 6 = +2, 7 = +3 (1 to 4 add nothing). Limit: four 7s and six 6s in the whole game.<br><button type="button">Got it</button>';
+  c.querySelector('button').onclick=()=>{c.remove();try{localStorage.setItem('cfo_coach','1')}catch(e){}};side.prepend(c)}
+ snakeLoop();showDie(5);
+ document.body.classList.add('has-dock');if(!$('#handDock')){const d=document.createElement('div');d.id='handDock';d.className='hand-dock';d.onclick=e=>{const b=e.target.closest('.pcard[data-k]');if(!b)return;const m=document.querySelector('#ludoOptions [data-a="use:'+b.dataset.k+'"]');if(m)m.click();else say('Play that card when the action menu offers it.')};document.body.appendChild(d)}
+ side.querySelectorAll('.player-card').forEach((c,i)=>{if(!c.querySelector('.chips')){const ch=document.createElement('div');ch.className='chips';ch.id=(i?'bot':'user')+'Chips';c.appendChild(ch)}});ludoHud();
+ opts.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.ludo-opt.card');if(!c||c.disabled)return;const r=c.getBoundingClientRect();c.style.setProperty('--ry',((e.clientX-r.left)/r.width-.5)*12+'deg');c.style.setProperty('--rx',-((e.clientY-r.top)/r.height-.5)*10+'deg')});
+ opts.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.ludo-opt.card');if(c){c.style.removeProperty('--ry');c.style.removeProperty('--rx')}});
+ side.querySelectorAll('.avatar').forEach((a,i)=>{a.innerHTML=charSvg(i?'bot':'user',1)});
+ sync();
+}
+async function rollDice(n,who,ask,note){
+ const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]},T={1:'',6:'rotateY(180deg)',3:'rotateY(90deg)',4:'rotateY(-90deg)',2:'rotateX(90deg)',5:'rotateX(-90deg)'},R={1:[0,0],6:[0,180],3:[0,-90],4:[0,90],2:[-90,0],5:[90,0]};
+ const face=k=>`<div class="dface" style="transform:${T[k]} translateZ(70px)">${Array.from({length:9},(_,i)=>`<i class="${P[k].includes(i)?'on':''}"></i>`).join('')}</div>`;
+ const ov=document.createElement('div');ov.className='dice-ov';
+ ov.innerHTML=`<div class="dice-stage"><div class="toss idle" id="toss"><div class="cube" id="cube" style="transform:rotateX(${25+rnd(40)}deg) rotateY(${25+rnd(40)}deg)">${[1,2,3,4,5,6].map(face).join('')}</div></div><div class="dsh" id="dsh"></div><div class="dice-label" id="dLab">${ask?'Tap the dice to roll!':(who==='You'?'You roll…':who+' rolls…')}</div>${ask?'<button id="dBtn" class="dbtn">🎲 Roll!</button>':''}</div>`;
+ document.body.appendChild(ov);void ov.offsetWidth;
+ const c=ov.querySelector('#cube'),tz=ov.querySelector('#toss'),sh=ov.querySelector('#dsh'),l=ov.querySelector('#dLab');
+ if(ask){sfx2('chip');await new Promise(r=>{function kd(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();go()}}function go(){document.removeEventListener('keydown',kd);r()}document.addEventListener('keydown',kd);c.onclick=go;ov.querySelector('#dBtn').onclick=go});ov.querySelector('#dBtn').remove()}
+ l.textContent=(who==='You'?'Rolling…':who+' is rolling…');tz.classList.remove('idle');tz.classList.add('toss');sh.classList.add('go');void c.offsetWidth;
+ const [ax,ay]=R[n];c.style.transform=`rotateX(${ax-720}deg) rotateY(${ay+1080}deg)`;
+ for(let i=0;i<9;i++)setTimeout(()=>{sfx2('step');noiseBurst(.04,.12,0,1800)},i*i*14+40);
+ await sleep(1350);noiseBurst(.1,.3,0,250);sfx2('chomp');
+ l.textContent=(who==='You'?'You rolled ':who+' rolled ')+n+(n===6?'! 🎉 SIX!':'!')+(note||'');l.classList.add('pop');
+ if(n===6){try{sfx2('level');confetti()}catch(e){}}
+ await sleep(1100);ov.style.opacity=0;await sleep(250);ov.remove()}
+function showDie(n,who,tot){const d=$('#dieFace');if(!d)return;
+ const P={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]}[n]||[];
+ d.innerHTML=Array.from({length:9},(_,i)=>`<i class="${P.includes(i)?'on':''}"></i>`).join('');
+ if(who){const c=$('#dieCap');if(c)c.textContent=who+' moved '+(tot||n)+((tot||n)==1?' space':' spaces');d.classList.remove('roll');void d.offsetWidth;d.classList.add('roll')}}
+function startLudo(){
+ G={mode:'ludo',qs:ludoAllQuestions(),qi:0,user:{pos:1},bot:{pos:1},hand:[],armed:{},snap:null,deck:[],turn:1,answers:[],over:false,winner:null,score:0,correct:0,incorrect:0,t0:Date.now()};
+ shuffleLayout();renderLudo();
+ {const dt=document.querySelector('.ludo-board-shell .dice-tray'),gs=document.querySelector('.game-status');if(dt&&gs)gs.parentNode.insertBefore(dt,gs)}
+ hudAttach();
+ {const qc=document.querySelector('#qCountSide'),t0=qc?qc.textContent:'';if(qc)new MutationObserver((m,o)=>{if(qc.textContent!==t0){const c=document.querySelector('.coach');if(c)c.remove();try{localStorage.setItem('cfo_coach','1')}catch(e){}o.disconnect()}}).observe(qc,{childList:true,characterData:true,subtree:true})}
+ setToken('#userToken',1,OFF.user);setToken('#botToken',1,OFF.bot);ludoHud();
+ applyTheme();musStep=0;musicLoop();clearInterval(window.HB);window.HB=setInterval(()=>{if(G&&!G.over&&G.user.pos>=90&&G.user.pos<100)sfx2('hb')},800);
+ gameLoop();
+}
+function renderLudo(){
+  view(`<div class="game-shell">
+    <section class="board-column">
+      <div class="board-heading">
+        <div><span class="game-kicker">CFO LEADERSHIP JOURNEY</span><h1>Snakes &amp; Ladders</h1></div>
+        <div class="board-heading-note">Every answer moves your career journey.</div>
+      </div>
+      ${renderLudoBoard()}
+    </section>
+    <aside class="ludo-side professional-side">
+      <div class="players-panel">
+        <div class="player-card active">
+          <div class="avatar avatar-you">●</div>
+          <div class="player-info"><strong>You</strong><span>${esc(R.name)}${R.status?' \u00b7 '+esc(R.status):''}</span><small>Square <b id="userSq">1</b> of 100</small></div>
+        </div>
+        <div class="player-card">
+          <div class="avatar avatar-bot">●</div>
+          <div class="player-info"><strong>Alex</strong><span>AI Opponent</span><small>Square <b id="botSq">1</b> of 100</small></div>
+        </div>
+      </div>
+      <div class="challenge-card">
+        <div class="challenge-head"><span class="challenge-icon">⚔</span><div><span id="chLabel">YOUR TURN</span><small id="squareLabel">Square 1</small></div></div>
+        <h2 id="lqTitle"></h2>
+        <p id="lqScenario"></p>
+        <div class="challenge-rule"></div>
+        <div class="question-prompt" id="qPrompt" style="display:none">How much do you agree with this statement?</div>
+        <div class="ludo-options" id="ludoOptions"></div>
+        <div class="submit-row"><span id="answerStatus"></span></div>
+      </div>
+      <div class="game-status">
+        <div><span>↻</span><small>Turn</small><b id="turnCount">1</b></div>
+        <div><span>⚄</span><small>Steps</small><b id="diceValue">—</b><em>(last move)</em></div>
+        <div><span>●</span><small>Your Position</small><b id="userPosSide">1</b></div>
+        <div><span>●</span><small>Alex Position</small><b id="botPosSide">1</b></div>
+      </div>
+      <div class="board-legend"><span class="lg l-lad"><i></i>Ladder up</span><span class="lg l-snk"><i></i>Snake down</span><span class="lg l-chal"><i>⚔️</i>Challenge</span><span class="lg l-pwr"><i>✨</i>Power-Up</span></div>
+      <div class="side-footer"><span>Question <b id="qCountSide">1 of 20</b></span><div class="progress-mini"><i id="qProgress"></i></div><div id="moveLog">Rate the statement from 1 to 7.</div></div>
+    </aside>
+  </div>`,`Game 2: Ludo Survey`);
+}
+const OFF={user:{x:-2.2,y:1.8},bot:{x:2.2,y:-1.8}},TID={user:'#userToken',bot:'#botToken'};
+const say=h=>{const e=$('#moveLog');if(e)e.innerHTML=h};
+const who=w=>w==='user'?'You':'Alex';
+const snakeName=s=>SNAKE_NAMES[Object.keys(LUDO_SNAKES).indexOf(String(s))%9]||'Snake',ladderName=s=>LADDER_NAMES[Object.keys(LUDO_LADDERS).indexOf(String(s))%9]||'Ladder';
+function trustAdj(){}   // Trust no longer exists; kept as a harmless stub
+function panel(label,title,text,prompt){const _c=$('.challenge-card');if(_c&&$('#chLabel').textContent!==label){_c.classList.remove('swap');void _c.offsetWidth;_c.classList.add('swap')}$('#chLabel').textContent=label;$('#lqTitle').textContent=title;$('#lqScenario').textContent=text;$('#qPrompt').style.display=prompt?'':'none';$('#ludoOptions').innerHTML='';$('#ludoOptions').classList.remove('cards','scale7');ludoHud()}
+function ask(html){return new Promise(res=>{const o=$('#ludoOptions');o.classList.remove('cards','scale7');o.innerHTML=html;o.querySelectorAll('button').forEach(b=>b.onclick=()=>res(b.dataset.a))})}
+function fx(pos,kind){const b=$('#ludoBoard');if(!b)return;const p=boardPath(pos);
+ for(let i=0;i<8;i++){const e=document.createElement('i');e.className='fx '+kind;e.textContent={spark:'✨',dust:'💨',gem:'💜',coin:'🪙'}[kind]||'✨';e.style.left=(p.x+(Math.random()-.5)*9)+'%';e.style.top=(p.y+(Math.random()-.5)*9)+'%';e.style.animationDelay=(i*.07)+'s';b.appendChild(e);setTimeout(()=>e.remove(),1500)}}
+async function jump(w,pos){G[w].pos=pos;setToken(TID[w],pos,OFF[w]);ludoHud();await sleep(450)}
+async function walk(w,n){const p=G[w];for(let i=0;i<n&&p.pos<100;i++){p.pos++;if(w==='user')sfx2('step');setToken(TID[w],p.pos,OFF[w]);const tk=$(TID[w]);if(tk){tk.classList.remove('step');void tk.offsetWidth;tk.classList.add('step')}ludoHud();await sleep(95)}}
+function nextQ(){if(!G.deck.length)G.deck=shuffle(ludoAllQuestions());return G.deck.pop()}
+
+const STAKES=[['CHECK','Low stake',1,'chip-g'],['RAISE','Medium stake',1.5,'chip-b'],['ALL-IN','High stake',2,'chip-r']];
+function allInFx(){sfx2('allin');const b=document.createElement('div');b.className='allin-burst';b.innerHTML='<b>ALL-IN!</b>';document.body.appendChild(b);setTimeout(()=>b.remove(),1400);const sh=$('.ludo-board-shell');if(sh){sh.classList.add('shake');setTimeout(()=>sh.classList.remove('shake'),600)}}
+const CAP={7:4,6:6};
+function capLeft(n){const used=(G.answers||[]).filter(a=>a.kind==='turn'&&a.rating===n).length;return CAP[n]==null?null:Math.max(0,CAP[n]-used)}
+function askCards(idx,q,gain,loss){return new Promise(res=>{
+ const o=$('#ludoOptions');o.classList.remove('cards');o.classList.add('scale7');let done=false;
+ o.innerHTML=LIKERT.map((t,n)=>{const L=capLeft(n+1),lock=L===0;return `<button class="ludo-opt likert${L!=null?' capped':''}" data-a="${n+1}" ${lock?'disabled':''} title="${esc(t)}${L!=null?(lock?' (limit reached: no more '+(n+1)+'s)':' ('+L+' left)'):''}" aria-label="${n+1} \\u2013 ${esc(t)}"><b>${n+1}</b>${L!=null?'<small>'+L+' left</small>':''}</button>`}).join('')+'<div class="tmr" id="tmr"><i></i><span></span></div>';
+ const T0=Date.now(),iv=setInterval(()=>{const b=o.querySelector('#tmr');if(!b||done){clearInterval(iv);return}const e=(Date.now()-T0)/1000;b.querySelector('i').style.width=Math.min(100,e*3)+'%';b.querySelector('span').textContent='⏱️ Take your time: '+e.toFixed(0)+'s'},100);
+ o.querySelectorAll('.likert').forEach(c=>c.onclick=()=>{if(done)return;done=true;c.classList.add('sel','locked');o.querySelectorAll('button').forEach(x=>x.disabled=true);sfx2('r'+c.dataset.a);say('Saved: <b>'+c.dataset.a+' \u2013 '+LIKERT[c.dataset.a-1]+'</b>');setTimeout(()=>res({rating:+c.dataset.a,stake:'CHECK',mult:1,fast:(Date.now()-T0)/1000<=10}),350)});
+})}
+async function askQ(q,kind,label,gain,loss){
+ const t0=Date.now();
+ panel(label,q.title,q.scenario,1);
+ const r=await askCards([],q,gain,loss);
+ const rating=r.rating,ok=rating>=5;
+ if(ok)G.correct++;else G.incorrect++;
+ G.score+=rating*10;
+  
+ setTimeout(()=>sfx2('chip'),380);
+ const rec={kind,level:q.level,attempt:1,qid:q.qid,title:q.title,skill:q.skill,statement:q.scenario,rating,text:LIKERT[rating-1],ok:ok?1:0,sec:+((Date.now()-t0)/1000).toFixed(1),square:G.user.pos,userSteps:0,stake:r.stake,stakeMult:r.mult,fast:r.fast?1:0};
+ G.answers.push(rec);ludoHud();
+ return {ok,rating,rec,q,mult:r.mult,fast:r.fast}}
+
+async function challenge(w){
+ if(w==='bot'){say('\u2694 Alex lands on a challenge square, but only you can earn the bonus.');await sleep(1000);return}
+ await finTask();
+}
+
+async function resolveSquare(w){
+ const p=G[w],s=p.pos;
+ if(LUDO_LADDERS[s]){say(`🪜 ${who(w)} climbed a ladder (<b>${ladderName(s)}</b>) to ${LUDO_LADDERS[s]}.`);await ladderClimb(s,w);fx(LUDO_LADDERS[s],'spark');sfx2('win');confetti()}
+ else if(LUDO_SNAKES[s]){
+  if(w==='user'&&G.armed.shield){G.armed.shield=0;say('🛡️ Your Whistleblower Shield blocked the snake!');ludoHud();await sleep(1000)}
+  else{say(`🐍 ${who(w)} slid down a snake (<b>${snakeName(s)}</b>) to ${LUDO_SNAKES[s]}.`);await snakeBite(s,w);fx(LUDO_SNAKES[s],'dust')}}
+ else if(PWR.includes(s)){fx(s,'coin');if(w==='user')sfx2('coin');
+  if(w==='user'){const k=pick(Object.keys(CARDS));G.hand.push(k);ludoHud();say(`✨ Power-Up! You received <b>${CARDS[k][0]} ${CARDS[k][1]}</b>: ${CARDS[k][2]}.`)}
+  else say('Alex lands on a Power-Up square, but never uses cards.');
+  await sleep(1100)}
+ else if(CHAL.includes(s)){fx(s,'gem');sfx2('gem');await challenge(w)}
+}
+
+async function moveBy(w,n){
+ if(G[w].pos>=100){say(`${who(w)} is already at the CFO's Office.`);await sleep(500);return}
+ await walk(w,n);await sleep(250);await resolveSquare(w);
+}
+
+function menu(post){
+ let h=post?'<button class="ludo-opt" data-a="end"><b>✔</b> End turn</button>':'<button class="ludo-opt" data-a="go"><b>▶</b> Show my question</button>';
+ G.hand.forEach(k=>{if(post||PRE.includes(k))h+=`<button class="ludo-opt" data-a="use:${k}"><b>${CARDS[k][0]}</b> Use ${CARDS[k][1]} — ${CARDS[k][2]}</button>`});
+ return h}
+function restore(){G.user.pos=G.snap.pos;setToken(TID.user,G.user.pos,OFF.user);ludoHud()}
+function useCard(k){G.hand.splice(G.hand.indexOf(k),1);if(PRE.includes(k)){G.armed[k]=1;sfx2('raise');say(`${CARDS[k][0]} ${CARDS[k][1]} is ready.`)}ludoHud()}
+
+async function userTurn(){
+ applyTheme();tenseBanner();
+ if(G.qi%5===0&&G.qi<G.qs.length){const li=G.qi/5;panel('NEW LEVEL '+(li+1)+' OF 4',LV[li][0],LEVEL_BLURB[li],0);sfx2('level');say(THEMES[li]+': Level '+(li+1)+' begins. Five statements to go.');await ask('<button class="ludo-opt" data-a="go"><b>▶</b> Start level '+(li+1)+'</button>')}
+ // Optional: arm Shield / Lucky Dice / Turbo before the question.
+ while(G.hand.some(k=>PRE.includes(k))){
+  panel('YOUR TURN • Square '+G.user.pos,'Before your question','Use a card, or continue to your question.',0);
+  const a=await ask(menu(false));if(a==='go')break;useCard(a.slice(4));
+ }
+ const q=G.qs[G.qi];
+ const r=await askQ(q,'turn',`QUESTION ${G.qi+1} OF ${G.qs.length} • Square ${G.user.pos}`,5,3);
+ G.qi++;
+ let steps=1+rnd(6),bonus='',note='';
+ if(G.armed.double){G.armed.double=0;const b2=1+rnd(6);note='  (Lucky Dice: '+steps+' & '+b2+')';steps=Math.max(steps,b2);bonus+=' \u{0001f3af} Lucky Dice: you kept the higher roll!'}
+ panel('YOUR ROLL','Your answer is saved.','Tap the dice (or press Space) to roll.',0);
+ const rb=r.rating>=7?3:r.rating===6?2:r.rating===5?1:0;r.rec.bonus=rb;if(rb)note+='  + '+rb+' bonus (you rated '+r.rating+')';
+ await rollDice(steps,'You',true,note);const base=steps;
+ if(rb){steps+=rb;bonus+=' 🏛️ Board confidence bonus +'+rb+' for your rating of '+r.rating+'.'}
+ if(G.armed.turbo){G.armed.turbo=0;steps*=2;bonus+=' 🚀 Turbo Boost: move doubled!'}
+ G.snap={pos:G.user.pos};
+ const move=async()=>{r.rec.userSteps=steps;$('#diceValue').textContent=steps;showDie(base,'You',steps);say(`🎲 Dice <b>${base}</b> → total move <b>${steps}</b>! • you advance <b>${steps}</b> space${steps==1?'':'s'}.${bonus}`);panel('YOUR MOVE','Moving '+steps+' space'+(steps==1?'':'s'),'',0);await moveBy('user',steps)};
+ await move();
+ // Optional: Insider Tip / Golden Parachute after the move.
+ while(G.hand.some(k=>k==='tip'||k==='parachute')){
+  panel('YOUR MOVE • Square '+G.user.pos,'Move complete','Use a card, or end your turn.',0);
+  const a=await ask(menu(true));if(a==='end')break;
+  const k=a.slice(4);useCard(k);
+  if(k==='parachute'){restore();say('⏪ Golden Parachute: your last move is undone.');break}
+  if(k==='tip'){say('🎲 Insider Tip: 2 bonus spaces!');showDie(2,'You');await moveBy('user',2)}
+ }
+ if(Math.random()<.25){const k=pick(Object.keys(CARDS));G.hand.push(k);sfx2('coin');say('🎁 Surprise find! You picked up a <b>'+CARDS[k][0]+' '+CARDS[k][1]+'</b> card.');ludoHud();await sleep(1100)}
+}
+
+async function market(){
+ const m=pick(MKT);panel('MARKET MOMENT',m[0],m[1],0);say('Every 4th turn, a Market Moment moves you. Alex only ever moves his dice roll + 1.');
+ m[2](G.user);setToken(TID.user,G.user.pos,OFF.user);ludoHud();await sleep(1900);
+ if(G.user.pos<100)await resolveSquare('user');
+}
+
+async function winCheck(w){
+ const p=G[w];if(p.pos<100||p.done)return;p.done=true;
+ if(!G.winner){G.winner=w;panel("\u{0001f3c6} CFO'S OFFICE",who(w)+' reached square 100 first','The board hires '+(w==='user'?'you':'Alex')+' as CFO!',0);say('\u{0001f3c6} '+who(w)+" reached the CFO's Office first and "+(w==='user'?'are':'is')+' hired as CFO!');sfx2(w==='user'?'win':'lose');if(w==='user')confetti();await sleep(2200)}
+}
+
+async function levelReview(){
+ const li=G.qi/5-1,a=G.answers.filter(x=>x.kind==='turn'&&x.level===li+1),avg=a.reduce((t,x)=>t+x.rating,0)/(a.length||1);
+ const b=avg>=6?['🥇','Gold',4]:avg>=5?['🥈','Silver',2]:avg>=4?['🥉','Bronze',0]:['📘','Learner',0];
+ (G.badges=G.badges||[]).push({level:li+1,name:LV[li][0],badge:b[0],tier:b[1],avg:+avg.toFixed(1)});
+ panel('LEVEL '+(li+1)+' REVIEW',b[0]+' '+b[1]+' badge: '+LV[li][0],'Average rating '+avg.toFixed(1)+' of 7. Badges are just for fun.',0);
+ sfx2('level');confetti();say(b[0]+' You finished Level '+(li+1)+' with a '+b[1]+' badge.');
+ await ask('<button class="ludo-opt" data-a="c"><b>▶</b> Continue</button>')}
+async function alexTurn(){panel("ALEX'S TURN",'Alex is moving\u2026','',0);await sleep(600);const n=1+rnd(6);await rollDice(n,'Alex');showDie(n,'Alex',n+1);say(`Alex rolled <b>${n}</b> + 1 benchmark bonus = <b>${n+1}</b> spaces.`);await moveBy('bot',n+1);await sleep(400)}
+async function gameLoop(){
+ // Every statement is always answered. Turn order alternates each round so neither player has a built-in edge.
+ outer:for(G.turn=1;G.turn<=G.qs.length;G.turn++){
+  for(const w of ['user','bot']){
+   ludoHud();
+   if(w==='user')await userTurn();else await alexTurn();
+   if(w==='user'&&G.qi%5===0&&G.qi>0)await levelReview();
+   await winCheck(w);if(G.winner)break outer;
+  }
+  if(G.turn%4===0&&G.turn<G.qs.length){await market();await winCheck('user');if(!G.winner)await winCheck('bot');if(G.winner)break outer}
+ }
+ // Final dash: if nobody has reached square 100 yet, keep rolling (no more statements) until someone does.
+ let dash=0;
+ while(!G.winner&&dash<40){dash++;
+  if(dash===1){panel('\u{0001f3c1} FINAL DASH','All 20 statements answered','Nobody has reached the CFO\'s Office yet. Keep rolling: first to square 100 is hired!',0);say('\u{0001f3c1} Final dash! Only dice rolls from here.');await sleep(1800)}
+  for(const w of ['user','bot']){
+   if(w==='user'){panel('FINAL DASH','Your roll','Tap the dice to roll.',0);const n=1+rnd(6);await rollDice(n,'You',true);showDie(n,'You');say('\u{0001f3b2} You rolled <b>'+n+'</b>!');await moveBy('user',n)}
+   else await alexTurn();
+   await winCheck(w);if(G.winner)break}
+ }
+ G.turn=Math.min(G.turn,G.qs.length);G.over=true;
+ finishLudo();
+}
+
+function finishLudo(){
+ const W=G.winner==='user'?"You were hired as CFO":G.winner==='bot'?"Alex was hired as CFO":(G.user.pos>=G.bot.pos?'You finished ahead of Alex':'Alex finished ahead of you');
+ const pc=[0,1,2,3].map(l=>{const a=G.answers.filter(x=>x.level===l+1);return a.length?Math.round((a.reduce((t,x)=>t+x.rating,0)/a.length-1)/6*100):null});
+ const acc=G.answers.length?Math.round((G.answers.reduce((t,x)=>t+x.rating,0)/G.answers.length-1)/6*100):0;
+ const cnt=n=>G.answers.filter(a=>a.stake===n).length,av=a=>a.length?a.reduce((x,y)=>x+y.stakeMult,0)/a.length:0,wr=G.answers.filter(a=>!a.ok),rt=G.answers.filter(a=>a.ok);
+ document.querySelector('#handDock')?.remove();document.body.classList.remove('has-dock');
+ const tq=G.answers.filter(a=>a.kind==='turn'),qf={};tq.forEach(a=>{qf['Q'+a.qid+'_Rating']=a.rating});const rc={};tq.forEach(a=>rc[a.rating]=(rc[a.rating]||0)+1);const same=Math.max(0,...Object.values(rc));
+ const lv=[1,2,3,4].map(l=>{const a=tq.filter(x=>x.level===l);return a.length?+(a.reduce((t,x)=>t+x.rating,0)/a.length).toFixed(2):''}),bd=l=>(G.badges||[]).find(b=>b.level===l)?.tier||'';
+ const rec={row:{Timestamp:new Date().toISOString(),RespondentID:R.id,Name:R.name,Email:R.email||'',Age:R.ageNum||'',AgeGroup:R.age,Gender:R.gender||'',CurrentStatus:R.status||'',BoardScore:G.score,AccuracyPct:acc,Winner:W,
+  L1_AnalyticalPct:pc[0]??'',L2_PeoplePct:pc[1]??'',L3_StrategyPct:pc[2]??'',L4_EthicsPct:pc[3]??'',StatementsAnswered:G.answers.length,EndedEarly:G.answers.length<G.qs.length?1:0,CorrectAnswers:G.correct,IncorrectAnswers:G.incorrect,
+  ChallengesAnswered:G.answers.length,FinTasks:(G.fin||[]).length,FinTasksCorrect:(G.fin||[]).filter(x=>x.ok).length,UserFinalSquare:G.user.pos,BotFinalSquare:G.bot.pos,Turns:Math.min(G.turn,G.qs.length),Stake_Check:cnt('CHECK'),Stake_Raise:cnt('RAISE'),Stake_AllIn:cnt('ALL-IN'),Stake_AvgMult:+av(G.answers).toFixed(2),Stake_AllInWrong:wr.filter(a=>a.stake==='ALL-IN').length,Stake_Overconfidence:+(av(wr)-av(rt)).toFixed(2),
+  ...qf,L1_AvgRating:lv[0],L2_AvgRating:lv[1],L3_AvgRating:lv[2],L4_AvgRating:lv[3],TotalRating:tq.reduce((t,x)=>t+x.rating,0),SameRatingMax:same,StraightLineFlag:(same>=Math.max(10,Math.ceil(tq.length*.75)))?1:0,FastAnswers:tq.filter(a=>a.fast).length,AvgSeconds:tq.length?+(tq.reduce((t,x)=>t+x.sec,0)/tq.length).toFixed(1):'',Badge_L1:bd(1),Badge_L2:bd(2),Badge_L3:bd(3),Badge_L4:bd(4),TotalMinutes:+((Date.now()-G.t0)/60000).toFixed(1),Survey_NPS:'',Survey_Comment:''},
+  answers:G.answers.map(a=>({...a,RespondentID:R.id,Name:R.name}))};
+ G.rec=rec;save(rec);showLudoFeedback(rec,W,pc);autoExcel(rec);
+}
+
+function showLudoFeedback(rec,winner,pc){
+ sfx2('level');
+ const total=Math.max(1,G.answers.length),accuracy=Math.round((G.answers.reduce((t,x)=>t+x.rating,0)/total-1)/6*100);
+ const np=`<div class="scale">${[0,1,2,3,4,5,6,7,8,9,10].map(i=>`<label><input type="radio" name="np" value="${i}"><span>${i}</span></label>`).join('')}</div>`;
+ view(`<section class="card">
+   <div class="ludo-result"><h2>Survey board complete</h2><p>${esc(R.name)}, you answered ${G.answers.length} questions.</p><p><b>${winner}</b>. Final positions: You ${G.user.pos}, Alex ${G.bot.pos}.</p></div>
+   <div class="stats"><div class="stat"><b>${accuracy}%</b>leadership self-assessment</div><div class="stat"><b>${G.user.pos}</b>Your position</div><div class="stat"><b>${G.bot.pos}</b>Alex position</div></div>
+   <h3>Survey response profile</h3>
+   ${LV.map((l,i)=>`<div class="bar"><span>${l[0]}: <b>${pc[i]==null?"not reached":pc[i]+"%"}</b></span><div><i style="width:${pc[i]||0}%"></i></div></div>`).join('')}
+   <p class="mut">Your survey answers have been saved, including the selected option and the number of steps generated after each answer.</p>
+   <hr>
+   <h3>One last thing</h3>
+   <label>How likely are you to recommend this assessment to a colleague? (0 = not at all, 10 = extremely likely)</label>${np}
+   <label for="cm">Any comments or suggestions? (optional)</label><textarea id="cm" rows="3"></textarea>
+   <p class="bad" id="er" role="alert"></p>
+   <button id="finishFeedback">See my report</button><button class="alt" id="skipFeedback">Skip</button>
+ </section>`,'Final report: feedback');
+ $('#finishFeedback').onclick=()=>{const c=$('input[name=np]:checked');if(!c)return $('#er').textContent='Please choose a score from 0 to 10, or press Skip.';rec.row.Survey_NPS=+c.value;rec.row.Survey_Comment=$('#cm').value.trim();saveFb(rec.row.RespondentID,rec.row.Survey_NPS,rec.row.Survey_Comment);showLudoReport(rec,pc,winner)};
+ $('#skipFeedback').onclick=()=>showLudoReport(rec,pc,winner);
+}
+
+function showLudoReport(rec,pc,winner){
+ view(`<section class="card"><h1>Final survey report</h1><p class="mut">${esc(R.name)}</p>
+ <div class="ludo-result"><h2>🎲 Game outcome: ${esc(winner)}</h2><p>Final board position — You: ${G.user.pos}; Alex: ${G.bot.pos}.</p><p style="font-size:13px;opacity:.85">The board result is partly luck. It is a game outcome, not a measure of your ability.</p></div>
+ <div class="stats"><div class="stat"><b>${G.correct}</b>Rated 5–7</div><div class="stat"><b>${G.incorrect}</b>Rated 1–4</div><div class="stat"><b>${rec.row.AccuracyPct}%</b>leadership self-assessment</div></div>
+ <p class="mut"><b>Your research result is the percentage scores below.</b> They show how you rate your own leadership habits (self-rated leadership orientation). They are not a test of proven skill.</p>${G.answers.length<G.qs.length?'<p class="mut"><b>The game ended early.</b> Someone reached square 100 after '+G.answers.length+' of '+G.qs.length+' statements, so levels you did not reach show "not reached" and your overall score uses only the statements you answered.</p>':''}<h3>Response profile (self-rated)</h3>${LV.map((l,i)=>`<div class="bar"><span>${l[0]}: <b>${pc[i]==null?"not reached":pc[i]+"%"}</b></span><div><i style="width:${pc[i]||0}%"></i></div></div>`).join('')}
+ ${(()=>{const pv=pc.filter(v=>v!=null),mx=Math.max(...pv),mn=Math.min(...pv),a=ARCHE[pc.indexOf(mx)],r=Math.round(rec.row.AccuracyPct),tier=r>=67?'High self-rated leadership':r>=34?'Medium self-rated leadership':'Low self-rated leadership',fin=(G.fin||[]),finTxt=fin.length?fin.filter(x=>x.ok).length+' of '+fin.length+' finance challenges correct':'No finance challenge squares landed on';
+ const tq2=G.answers.filter(a=>a.kind==='turn'),rc2={};tq2.forEach(a=>rc2[a.rating]=(rc2[a.rating]||0)+1);const same=+rec.row.SameRatingMax||0,SL=+rec.row.StraightLineFlag===1,modeR=+Object.keys(rc2).sort((x,y)=>rc2[y]-rc2[x])[0],tq={length:tq2.length};
+ if(SL)return `<div class="ludo-result"><h2>\u26A0\uFE0F Interpret with caution</h2><p><b>Low response variation:</b> you gave a rating of <b>${modeR}</b> on <b>${same} of ${tq.length}</b> statements. When almost every answer is the same, the four leadership areas cannot be told apart, so this result is not a reliable picture of your strengths.</p><p><b>Overall self-assessment score:</b> ${r}% (not reliable)</p><p><b>Finance knowledge (objective):</b> ${finTxt}</p><p style="font-size:13px;opacity:.8">Tip: next time, think about which statements describe you best and which least. Real leaders are stronger in some areas than others. This is a self-assessment of leadership habits, not a test of ability.</p></div>`;
+ return `<div class="ludo-result"><h2>🏅 ${a[0]}</h2><p>${a[1]}</p><p><b>Result:</b> ${tier} (${r}% leadership self-assessment score)</p><p><b>Finance knowledge (objective):</b> ${finTxt}</p><p style="font-size:13px;opacity:.8">How this is calculated: each level score = (average of your 5 ratings − 1) ÷ 6 × 100, so rating 1 on everything = 0%. Because 7s and 6s are limited (four 7s, six 6s), the highest possible overall score is about 78%. This is a <b>self-assessment</b> of leadership habits, not a test of ability, and it also gives a small move bonus on the board (the dice still add luck). Bands: Low below 34%, Medium 34–66%, High 67% and above.</p><p><b>Best to grow next:</b> ${LV[pc.indexOf(mn)][0]} (${mn}%)</p></div>`})()}
+ ${(()=>{const w=G.winner,why=w?(w==='user'?'You reached square 100 first, so you were hired as CFO.':'Alex reached square 100 first, so Alex was hired as CFO.'):'Nobody reached square 100, so nobody was hired. You finished '+(G.user.pos>=G.bot.pos?'ahead of':'behind')+' Alex.';
+ return `<div class="rules"><h3>🏛️ How the CFO decision was made</h3><ul><li><b>You</b> finished on square <b>${Math.min(G.user.pos,100)}</b>.</li><li><b>Alex</b> finished on square <b>${Math.min(G.bot.pos,100)}</b>.</li><li><b>Decision:</b> ${why}</li><li>Your ratings added a small move bonus each turn (+3 for 7, +2 for 6, +1 for 5). High ratings were limited (four 7s, six 6s), so inflating every answer was not possible.</li></ul></div><details class="rules"><summary><b>📘 Game rules recap</b></summary>${RULES_HTML}</details>`})()}
+ <div class="stats">${(G.badges||[]).map(b=>`<div class="stat"><b>${b.badge}</b>${esc(b.name)}<br>${b.tier} (${b.avg}/7)</div>`).join('')}</div>
+ <p><b>Your responses have been saved.</b> Thank you for taking part.</p>
+ <button id="dl">Download my results (Excel)</button><button class="alt" id="pr">Print or save as PDF</button><button class="alt" id="nw">Start a new respondent</button>
+ </section>`,'Final report');
+ $('#dl').onclick=()=>xl([rec]);$('#pr').onclick=()=>window.print();$('#nw').onclick=home;
+}
+
+/* ===== END LUDO / SNAKES & LADDERS ===== */
+
+/* ===== RESEARCHER VIEW ===== */
+function obs(d){const r=d.map(x=>x.row),o=[],A=k=>mean(r.filter(x=>x[k]!==''&&x[k]!=null).map(x=>+x[k]));
+ const cnts=k=>Object.entries(r.reduce((m,x)=>(m[x[k]]=(m[x[k]]||0)+1,m),{})).map(e=>e[0]+': '+e[1]).join(', ');
+ o.push(['Respondents',r.length],['Average board score',A('BoardScore')],['Average self-assessment %',A('AccuracyPct')],['Average correct answers',A('CorrectAnswers')],['Average minutes',A('TotalMinutes')],['Average stake multiplier',A('Stake_AvgMult')],['Overconfidence index (avg stake when wrong minus when right)',A('Stake_Overconfidence')],['All-in answers (total)',r.reduce((t,x)=>t+(+x.Stake_AllIn||0),0)],['Flagged: same rating on 75%+ of answered statements',r.filter(x=>+x.StraightLineFlag===1).length+' of '+r.length]);
+ const dm=[['IQ & Analytical Rigor',A('L1_AnalyticalPct')],['EQ & People Leadership',A('L2_PeoplePct')],['Decision-Making & Strategy',A('L3_StrategyPct')],['Ethics & Integrity',A('L4_EthicsPct')]];
+ dm.forEach(x=>o.push(['Domain average %: '+x[0],x[1]]));const s=[...dm].sort((a,b)=>a[1]-b[1]);
+ if(r.length)o.push(['Weakest domain',s[0][0]+' ('+s[0][1]+'%)'],['Strongest domain',s[3][0]+' ('+s[3][1]+'%)']);
+ o.push(['Board outcome',cnts('Winner')||'-']);
+ const by={};d.forEach(x=>x.answers.forEach(a=>{(by[a.qid]=by[a.qid]||[]).push((a.rating||0)/7)}));
+ const q=Object.entries(by).map(([k,v])=>[k,Math.round(v.reduce((a,b)=>a+b,0)/v.length*100),v.length]).sort((a,b)=>a[1]-b[1])[0];
+ if(q)o.push(['Lowest-rated statement','Question '+q[0]+': '+q[1]+'% readiness across '+q[2]+' answers']);
+ const nr=r.filter(x=>x.Survey_NPS!==''&&x.Survey_NPS!=null);if(nr.length)o.push(['Average recommend score (0-10)',mean(nr.map(x=>+x.Survey_NPS))]);
+ return o}
+function pearson(x,y){const n=x.length;if(n<3)return null;const av=a=>a.reduce((p,q)=>p+q,0)/a.length,mx=av(x),my=av(y);let a=0,b=0,c=0;x.forEach((v,i)=>{a+=(v-mx)*(y[i]-my);b+=(v-mx)**2;c+=(y[i]-my)**2});return b&&c?a/Math.sqrt(b*c):null}
+function concl(d){const r=d.map(x=>x.row),n=r.length;if(!n)return['No responses yet. Key findings appear here once respondents finish the game.'];
+ const c=[],A=k=>mean(r.filter(x=>x[k]!==''&&x[k]!=null).map(x=>+x[k])),dm=[['IQ & Analytical Rigor','L1_AnalyticalPct'],['EQ & People Leadership','L2_PeoplePct'],['Decision-Making & Strategy','L3_StrategyPct'],['Ethics & Integrity','L4_EthicsPct']].map(([l,k])=>[l,A(k)]).sort((a,b)=>a[1]-b[1]);
+ if(n<30)c.push('The sample is small (n='+n+'). Treat every finding below as indicative, not conclusive.');
+ c.push('Weakest domain: '+dm[0][0]+' (average '+dm[0][1]+'% average readiness). Strongest domain: '+dm[3][0]+' ('+dm[3][1]+'%).');
+ const hi=r.filter(x=>+x.AccuracyPct>=80).length;c.push(Math.round(hi/n*100)+'% of respondents ('+hi+' of '+n+') scored 80% or higher. Average self-assessment was '+A('AccuracyPct')+'%.');
+ const fl=r.filter(x=>+x.StraightLineFlag===1).length;if(fl)c.push(fl+' of '+n+' respondents ('+Math.round(fl/n*100)+'%) gave the same rating on at least 75% of the statements they answered. Consider checking results with and without them.');
+ const per={};r.forEach(x=>per[x.Winner]=(per[x.Winner]||0)+1);const tp=Object.entries(per).sort((a,b)=>b[1]-a[1])[0];c.push('Most common game outcome (not a skill score): '+tp[0]+' ('+Math.round(tp[1]/n*100)+'% of respondents).');
+ const by={};d.forEach(x=>x.answers.forEach(a=>{(by[a.qid]=by[a.qid]||[]).push((a.rating||0)/7)}));const qs=Object.entries(by).map(([k,v])=>[k,Math.round(v.reduce((a,b)=>a+b,0)/v.length*100)]).sort((a,b)=>a[1]-b[1]);
+ if(qs.length)c.push('Lowest-rated statement: Q'+qs[0][0]+' ('+qs[0][1]+'%). Highest-rated: Q'+qs[qs.length-1][0]+' ('+qs[qs.length-1][1]+'%).');
+ const nr=r.filter(x=>x.Survey_NPS!==''&&x.Survey_NPS!=null);if(nr.length){const pro=nr.filter(x=>+x.Survey_NPS>=9).length,det=nr.filter(x=>+x.Survey_NPS<=6).length;c.push('Net Promoter Score: '+Math.round((pro-det)/nr.length*100)+' (from '+nr.length+' responses).')}
+ return c}
+function xl(d,fn){if(typeof XLSX==='undefined'){const m=document.createElement('p');m.className='bad';m.textContent='The Excel library could not load. Connect to the internet and try again.';app.appendChild(m);return}
+ const wb=XLSX.utils.book_new(),add=(n,ws)=>XLSX.utils.book_append_sheet(wb,ws,n);
+ add('Respondents',XLSX.utils.json_to_sheet(d.map(x=>x.row)));add('Answers',XLSX.utils.json_to_sheet(d.flatMap(x=>x.answers)));add('Observations',XLSX.utils.aoa_to_sheet([['Observation','Value'],...obs(d)]));add('Conclusions',XLSX.utils.aoa_to_sheet([['Key findings'],...concl(d).map(x=>[x])]));
+ add('Codebook',XLSX.utils.aoa_to_sheet([['Column','Meaning'],['Rating limit','Each respondent could give a 7 on at most 4 statements and a 6 on at most 6 statements (to stop everything being rated high). StraightLineFlag marks respondents who still gave the same rating on most statements.'],['Q1_Rating ... Q20_Rating','Likert rating, 1 = Strongly disagree ... 7 = Strongly agree. Q1-5 IQ & Analytical Rigor, Q6-10 EQ & People Leadership, Q11-15 Decision-Making & Strategy, Q16-20 Ethics & Integrity'],['L1_AvgRating ... L4_AvgRating','Mean rating (1-7) for each level'],['TotalRating','Sum of the 20 ratings (20-140)'],['AccuracyPct','leadership self-assessment % = (mean rating - 1) / 6 x 100'],['L1_AnalyticalPct ... L4_EthicsPct','Readiness % for each level'],['Email','Email entered on the details form'],['Age / AgeGroup','Age entered, and its group (Under 18, 18-24, 25-34, 35-44, 45 and above)'],['Gender','Male or Female, chosen on the details form'],['CurrentStatus','Working, UG (undergraduate) or PG (postgraduate)'],['Badge_L1 ... Badge_L4','Gold (avg 6+), Silver (5+), Bronze (4+), Learner'],['CorrectAnswers / IncorrectAnswers','Number of ratings of 5-7 / 1-4 (includes bonus challenge squares)'],['FastAnswers / AvgSeconds','Number of turn answers given within 10 seconds / mean seconds taken per answer'],['Survey_NPS','Recommend score 0-10'],['SameRatingMax','Highest number of statements (out of 20) that received the same rating'],['StraightLineFlag','1 if the same rating was given on at least 75% of the answered statements (and at least 10) - possible careless or always-agree answering; otherwise 0'],['StatementsAnswered / EndedEarly','Number of statements answered (max 20) / 1 if the game ended before all 20 because a player reached square 100. Unreached levels have blank domain scores.'],['How to read results','All scores are self-rated leadership orientation, not proven skill. Board winner and finish square are game outcomes (dice plus a small rating bonus), not research scores.'],['Answers sheet','One row per rating given: statement, rating, bonus (board bonus squares: +3 for 7, +2 for 6, +1 for 5), seconds taken, board square']]));
+ XLSX.writeFile(wb,fn||'cfo_survey_results.xlsx')}
+function admin(){const d=load(),r=d.map(x=>x.row),n=r.length,A=k=>mean(r.filter(x=>x[k]!==''&&x[k]!=null).map(x=>+x[k]));
+ const bars=a=>a.map(([l,v,t])=>`<div class="bar"><span>${esc(l)}: <b>${esc(t)}</b></span><div><i style="width:${Math.min(100,v)}%"></i></div></div>`).join('');
+ const dom=n?bars([['IQ & Analytical Rigor',A('L1_AnalyticalPct')],['EQ & People Leadership',A('L2_PeoplePct')],['Decision-Making & Strategy',A('L3_StrategyPct')],['Ethics & Integrity',A('L4_EthicsPct')]].map(x=>[x[0],x[1],x[1]+'%'])):'<p class="mut">No data yet.</p>';
+ const per={};r.forEach(x=>per[x.Winner]=(per[x.Winner]||0)+1);const pp=n?bars(Object.entries(per).map(([k,v])=>[k,v/n*100,v+' ('+Math.round(v/n*100)+'%)'])):'<p class="mut">No data yet.</p>';
+ view(`<section class="card"><h2>Researcher view</h2><p class="mut">Shows responses saved in this browser. For all respondents on all devices, connect the Google Sheet (see SHEET_URL in the file).</p>
+<div class="stats"><div class="stat"><b>${n}</b>Respondents</div><div class="stat"><b>${n?A('AccuracyPct'):0}%</b>Average self-assessment</div><div class="stat"><b>${n?A('BoardScore'):0}</b>Average score</div></div>
+<button id="ex">Export to Excel</button><button class="alt" id="bk">Back</button><button class="alt" id="cl">Clear stored data</button></section>
+<section class="card"><h3>Key findings</h3><ul class="ins find">${concl(d).map(x=>'<li>'+esc(x)+'</li>').join('')}</ul></section>
+<div class="grid"><section class="card"><h3>Average score by domain</h3>${dom}</section><section class="card"><h3>Board outcome</h3>${pp}</section></div>
+<section class="card"><h3>Observations</h3><div class="scroll"><table>${obs(d).map(x=>`<tr><td>${esc(x[0])}</td><td>${esc(x[1])}</td></tr>`).join('')}</table></div></section>
+<section class="card"><h3>Respondents</h3><div class="scroll"><table><tr><th>ID</th><th>Name</th><th>Score</th><th>Readiness %</th><th>Correct</th><th>You / Alex</th><th>Outcome</th></tr>${d.map(x=>`<tr><td>${esc(x.row.RespondentID)}</td><td>${esc(x.row.Name)}</td><td>${x.row.BoardScore}</td><td>${x.row.AccuracyPct}</td><td>${x.row.CorrectAnswers}</td><td>${x.row.UserFinalSquare} / ${x.row.BotFinalSquare}</td><td>${esc(x.row.Winner)}</td></tr>`).join('')||'<tr><td colspan="7">No responses yet.</td></tr>'}</table></div></section>`,'Researcher view');
+ $('#ex').onclick=()=>xl(d);$('#bk').onclick=()=>{location.hash='';home()};let sure=0;$('#cl').onclick=()=>{if(!sure){sure=1;$('#cl').textContent='Click again to delete everything';return}try{localStorage.removeItem('cfo_results')}catch(e){}admin()}}
+document.addEventListener('keydown',e=>{
+ if(!G||G.over||!$('#ludoOptions')||['INPUT','TEXTAREA','SELECT'].includes((e.target||{}).tagName))return;
+  const n=+e.key-1,k=(e.key.length===1&&n>=0&&n<7)?n:-1,b=k>=0&&(()=>{const o=$('#ludoOptions'),L=o.querySelectorAll('.likert');return L.length?L[k]:o.querySelector('.cdbar')?o.children[k]:null})();
+ if(b&&!b.disabled){e.preventDefault();b.click()}
+});
+$('#adm').onclick=e=>{e.preventDefault();admin()};
+$('#lnk').onclick=e=>{e.preventDefault();linkExcel()};
+location.hash=='#admin'?admin():home();
+</script></body></html>
